@@ -1,137 +1,134 @@
-export interface HeroEvent {
-  id: string;
-  label: string;
-  icon: string; // Lucide icon name
-  pdpFocus:
-    | "title"
-    | "bullets"
-    | "description"
-    | "image"
-    | "keywords"
-    | "richContent";
-  pdpContent: {
-    before: string;
-    after: string;
-    badgeText?: string;
-  };
-}
+// Timeline-based data for the Nourra hero animation — multi-moment continuous optimization
 
-export interface HeroMetricSnapshot {
-  searchRank: number;
-  aiVisibility: number;
-  conversion: number;
-  traffic: number;
-}
+export type PulseTarget =
+  | "image"
+  | "title"
+  | "bullets"
+  | null;
 
-export interface BasePDP {
+export type ImageVariant =
+  | "baseline"
+  | "fitness"
+  | "outdoor"
+  | "study"
+  | "wellness"
+  | "sports";
+
+export interface HeroTimelineState {
+  productImage: ImageVariant;
   title: string;
-  image: string;
   bullets: string[];
-  description: string;
-  keywords: string[];
-  richContent: string;
+  currentMoment: string | null;
+  eventTag: string | null;
+  promoBadge: string | null;
+  overlay: string | null;
+  metricsAnimate: boolean;
+  pulseTarget: PulseTarget;
+  microTag: string | null;
+  hasIntroPlayed: boolean;
 }
 
-export const basePDP: BasePDP = {
-  title: "Ultra-Clean Dishwasher Pods — 72 Count, Enzyme-Based Formula",
-  image: "/pdp-hero.png",
-  bullets: [
-    "Powerful enzyme-based cleaning action dissolves tough grease",
-    "72-count value pack for months of sparkling clean dishes",
-    "Safe for all dishwasher types including stainless steel interiors",
-    "Phosphate-free, septic-safe formula for eco-conscious homes",
-    "Pre-measured pods — no mess, no waste, perfect dose every time",
-  ],
-  description:
-    "Ultra-Clean Dishwasher Pods deliver professional-grade cleaning power in a convenient, pre-measured pod. Our advanced enzyme-based formula cuts through baked-on food, grease, and stains in a single wash cycle.",
-  keywords: [
-    "dishwasher pods",
-    "dishwasher detergent",
-    "dish pods",
-    "dishwasher tablets",
-    "eco dish pods",
-  ],
-  richContent:
-    "Discover the Ultra-Clean difference — our proprietary enzyme blend targets proteins, starches, and fats for a complete clean every cycle.",
-};
+export interface PurchaseMoment {
+  label: string;
+  eventTag: string;
+  title: string;
+  bullets: string[];
+  imageVariant: ImageVariant;
+  promoBadge?: string;
+}
 
-export const heroEvents: HeroEvent[] = [
+export const purchaseMoments: PurchaseMoment[] = [
   {
-    id: "valentines",
-    label: "Valentine's Day",
-    icon: "Heart",
-    pdpFocus: "title",
-    pdpContent: {
-      before: "Ultra-Clean Dishwasher Pods — 72 Count, Enzyme-Based Formula",
-      after: "Ultra-Clean Dishwasher Pods — Perfect Valentine's Gift for a Spotless Home",
-      badgeText: "Valentine's Pick",
-    },
+    label: "New Year",
+    eventTag: "New Year fitness demand rising",
+    title: "Nourra Superfood Shake\nfor Daily Fitness & Nutrition",
+    bullets: [
+      "Clean Plant-Based Energy",
+      "Supports Daily Nutrition Goals",
+      "20g protein per serving",
+      "No artificial sweeteners",
+    ],
+    imageVariant: "fitness",
   },
   {
-    id: "prime-day",
+    label: "Summer Fitness",
+    eventTag: "Workout demand increasing",
+    title: "Nourra Superfood Shake\nfor Summer Workouts & Recovery",
+    bullets: [
+      "Post-workout recovery",
+      "Lightweight daily nutrition",
+      "Hydration-friendly formula",
+      "Low-calorie, high-protein",
+    ],
+    imageVariant: "outdoor",
+  },
+  {
+    label: "Back to School",
+    eventTag: "Convenience & daily nutrition demand",
+    title: "Nourra Superfood Shake\nEasy Nutrition for Busy Days",
+    bullets: [
+      "Quick grab-and-go nutrition",
+      "Focus fuel for long study days",
+      "Easy to prep in seconds",
+      "Campus-friendly packaging",
+    ],
+    imageVariant: "study",
+  },
+  {
     label: "Prime Day",
-    icon: "Zap",
-    pdpFocus: "bullets",
-    pdpContent: {
-      before:
-        "Powerful enzyme-based cleaning action dissolves tough grease",
-      after: "PRIME DAY DEAL — Save 40% on our #1 rated enzyme formula that dissolves tough grease",
-      badgeText: "Prime Deal",
-    },
+    eventTag: "High purchase intent spike",
+    title: "Nourra Superfood Shake\nBest Value Nutrition Pack",
+    bullets: [
+      "Best value 24-pack bundle",
+      "Premium plant-based protein",
+      "Subscribe & Save eligible",
+      "Free same-day delivery",
+    ],
+    imageVariant: "fitness",
+    promoBadge: "Prime Day Deal",
   },
   {
-    id: "new-sku",
-    label: "New SKU Launch",
-    icon: "Rocket",
-    pdpFocus: "description",
-    pdpContent: {
-      before:
-        "Ultra-Clean Dishwasher Pods deliver professional-grade cleaning power in a convenient, pre-measured pod.",
-      after: "NEW — Ultra-Clean Pro Pods with 2× enzyme concentration deliver the deepest clean yet. Now in Fresh Citrus scent.",
-      badgeText: "New Formula",
-    },
-  },
-  {
-    id: "hulu-campaign",
-    label: "Hulu TV Campaign",
-    icon: "Tv",
-    pdpFocus: "image",
-    pdpContent: {
-      before: "Standard product hero image",
-      after: "\"As Seen on TV\" lifestyle creative with campaign branding",
-      badgeText: "As Seen on TV",
-    },
-  },
-  {
-    id: "black-friday",
-    label: "Black Friday",
-    icon: "Tag",
-    pdpFocus: "keywords",
-    pdpContent: {
-      before: "dishwasher pods, dishwasher detergent, dish pods",
-      after: "black friday dishwasher deals, dishwasher pods sale, best dish pod deals 2026",
-      badgeText: "BF Deal",
-    },
-  },
-  {
-    id: "holiday",
     label: "Holiday Season",
-    icon: "Sparkles",
-    pdpFocus: "richContent",
-    pdpContent: {
-      before:
-        "Discover the Ultra-Clean difference — our proprietary enzyme blend targets proteins, starches, and fats.",
-      after: "The perfect holiday host gift — give the gift of a spotless kitchen this season with our festive gift-ready packaging.",
-      badgeText: "Holiday Gift",
-    },
+    eventTag: "Wellness & immunity focus",
+    title: "Nourra Superfood Shake\nDaily Wellness & Immunity Support",
+    bullets: [
+      "Immunity-supporting superfoods",
+      "Daily wellness made simple",
+      "Vitamin C & Zinc enriched",
+      "Gift-worthy wellness pack",
+    ],
+    imageVariant: "wellness",
+  },
+  {
+    label: "World Cup",
+    eventTag: "Game-day energy demand",
+    title: "Nourra Superfood Shake\nFuel for Game Day Energy",
+    bullets: [
+      "Sustained energy for game day",
+      "Share the fuel with friends",
+      "Quick halftime nutrition",
+      "Fan-favorite flavor lineup",
+    ],
+    imageVariant: "sports",
   },
 ];
 
-export const heroMetricSteps: HeroMetricSnapshot[] = [
-  { searchRank: 12, aiVisibility: 18, conversion: 8, traffic: 14 },
-  { searchRank: 21, aiVisibility: 29, conversion: 14, traffic: 24 },
-  { searchRank: 28, aiVisibility: 38, conversion: 18, traffic: 32 },
-  { searchRank: 35, aiVisibility: 47, conversion: 22, traffic: 40 },
-  { searchRank: 41, aiVisibility: 55, conversion: 25, traffic: 48 },
-  { searchRank: 47, aiVisibility: 62, conversion: 28, traffic: 54 },
+export const initialState: HeroTimelineState = {
+  productImage: "baseline",
+  title: "Nourra Shake\nBanana Blueberry",
+  bullets: ["Plant protein", "Organic shake", "Dairy-free formula", "No added sugar"],
+  currentMoment: null,
+  eventTag: null,
+  promoBadge: null,
+  overlay: null,
+  metricsAnimate: false,
+  pulseTarget: null,
+  microTag: null,
+  hasIntroPlayed: false,
+};
+
+export const finalMetrics = [
+  { label: "AI Visibility", value: "+47", change: "%" },
+  { label: "Conversion", value: "+22", change: "%" },
+  { label: "Traffic", value: "+40", change: "%" },
 ];

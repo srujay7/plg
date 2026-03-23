@@ -52,7 +52,7 @@ export const heroContent: HeroContent = {
   eyebrow: "AI Shelf Optimization",
   headline: "Win the AI Shelf",
   subheadline:
-    "AI that continuously adapts retail content across search, answer engines, and retailer PDPs to capture demand and drive conversion.",
+    "Continuously adapt your product content to match shopper intent, retail moments, and AI discovery.",
   primaryCta: {
     label: "Get your AI Visibility Report",
     href: "/sample-report",

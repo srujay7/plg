@@ -65,7 +65,7 @@ export function OutcomeMetricRail({
         "flex items-center gap-4 rounded-xl border p-3",
         "transition-all duration-500",
         isActive
-          ? "border-cyan/30 bg-navy/80 opacity-100 glow-cyan"
+          ? "border-white/20 bg-navy/80 opacity-100 shadow-lg shadow-white/5"
           : "border-border bg-navy/40 opacity-40"
       )}
       animate={{ scale: isActive ? 1 : 0.97 }}
@@ -89,7 +89,7 @@ export function OutcomeMetricRail({
           <span
             className={cn(
               "text-lg font-bold font-mono transition-colors duration-500",
-              isActive ? "text-cyan" : "text-text-muted"
+              isActive ? "text-white" : "text-text-muted"
             )}
           >
             <AnimatedNumber value={metric.value} isActive={isActive} />
