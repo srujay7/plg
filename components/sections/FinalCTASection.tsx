@@ -6,6 +6,7 @@ import { finalCta } from "@/data/siteContent";
 import { SectionShell } from "@/components/layout/SectionShell";
 import { ContentContainer } from "@/components/layout/ContentContainer";
 import { Button } from "@/components/ui/Button";
+import { ReportButton } from "@/components/report/ReportButton";
 import { staggerContainer, fadeInUp } from "@/lib/motion";
 import { cn } from "@/lib/cn";
 
@@ -49,11 +50,11 @@ export function FinalCTASection() {
             variants={fadeInUp}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10"
           >
-            <Button href={cta.href} size="lg">
+            <ReportButton size="lg">
               {cta.label}
               <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-            <Button href="#book-demo" variant="secondary" size="lg">
+            </ReportButton>
+            <Button href="https://www.commerceiq.ai/demo" variant="secondary" size="lg">
               <MessageCircle className="w-4 h-4 mr-2" />
               Talk to our team
             </Button>

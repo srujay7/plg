@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SectionShell } from "@/components/layout/SectionShell";
 import { ContentContainer } from "@/components/layout/ContentContainer";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Button } from "@/components/ui/Button";
+import { ReportButton } from "@/components/report/ReportButton";
 import { PricingCard } from "@/components/pricing/PricingCard";
 import { PricingTable } from "@/components/pricing/PricingTable";
 import { GuaranteeSection } from "@/components/pricing/GuaranteeSection";
@@ -96,9 +96,9 @@ export default function PricingPage() {
                     </li>
                   ))}
                 </ul>
-                <Button href={offering.cta.href} variant="secondary" size="md">
+                <ReportButton variant="secondary" size="md">
                   {offering.cta.label}
-                </Button>
+                </ReportButton>
               </div>
             ))}
           </div>
@@ -115,9 +115,9 @@ export default function PricingPage() {
               align="center"
             />
             <div className="mt-10">
-              <Button href="#book-demo" size="lg">
+              <ReportButton size="lg">
                 Get your free report
-              </Button>
+              </ReportButton>
             </div>
           </div>
         </ContentContainer>

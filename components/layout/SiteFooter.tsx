@@ -1,4 +1,7 @@
+"use client";
+
 import { cn } from "@/lib/cn";
+import { useReportModal } from "@/components/report/ReportModalProvider";
 
 interface FooterColumn {
   title: string;
@@ -44,30 +47,32 @@ interface SiteFooterProps {
 }
 
 export function SiteFooter({ className }: SiteFooterProps) {
+  const { open: openReportModal } = useReportModal();
+
   return (
     <footer
       className={cn(
-        "border-t border-[#1a2340] bg-gradient-to-b from-[#0a0e1a] to-[#080c16]",
+        "border-t border-slate-200 bg-white",
         className
       )}
     >
       {/* CTA banner */}
       <div className="mx-auto max-w-7xl px-6 md:px-8">
-        <div className="flex flex-col items-center gap-4 border-b border-[#1a2340] py-12 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div className="flex flex-col items-center gap-4 border-b border-slate-200 py-12 text-center sm:flex-row sm:justify-between sm:text-left">
           <div>
-            <h3 className="text-lg font-semibold text-white">
+            <h3 className="text-lg font-semibold text-slate-900">
               Get your AI Visibility Report
             </h3>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-slate-500">
               See how your brand performs across AI-powered search today.
             </p>
           </div>
-          <a
-            href="/sample-report"
-            className="shrink-0 rounded-lg bg-[#00d4ff] px-6 py-3 text-sm font-semibold text-[#0a0e1a] transition-opacity hover:opacity-90"
+          <button
+            onClick={openReportModal}
+            className="shrink-0 rounded-lg bg-[#10B981] px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
             Get Free Report
-          </a>
+          </button>
         </div>
       </div>
 
@@ -84,7 +89,7 @@ export function SiteFooter({ className }: SiteFooterProps) {
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="text-sm text-slate-500 transition-colors hover:text-white"
+                      className="text-sm text-slate-500 transition-colors hover:text-slate-900"
                     >
                       {link.label}
                     </a>
@@ -97,9 +102,9 @@ export function SiteFooter({ className }: SiteFooterProps) {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-[#1a2340]">
+      <div className="border-t border-slate-200">
         <div className="mx-auto flex max-w-7xl items-center justify-center px-6 py-6 md:px-8">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-400">
             &copy; 2024 Content Agent. All rights reserved.
           </p>
         </div>

@@ -7,6 +7,7 @@ import { SectionShell } from "@/components/layout/SectionShell";
 import { ContentContainer } from "@/components/layout/ContentContainer";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { ReportButton } from "@/components/report/ReportButton";
 import { staggerContainer, fadeInUp } from "@/lib/motion";
 import { cn } from "@/lib/cn";
 
@@ -39,7 +40,7 @@ export function PricingSection() {
               className={cn(
                 "rounded-xl border p-6 flex flex-col transition-all duration-300",
                 tier.highlighted
-                  ? "border-cyan/50 bg-cyan/[0.03] shadow-[0_0_40px_-12px_rgba(0,212,255,0.15)]"
+                  ? "border-cyan/50 bg-cyan/[0.03] shadow-[0_0_40px_-12px_rgba(16,185,129,0.15)]"
                   : "border-border bg-midnight-light hover:border-cyan/30"
               )}
             >
@@ -134,10 +135,10 @@ export function PricingSection() {
               </li>
             ))}
           </ul>
-          <Button href={freeOfferings[0].cta.href} size="lg">
+          <ReportButton size="lg">
             {freeOfferings[0].cta.label}
             <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+          </ReportButton>
         </motion.div>
       </ContentContainer>
     </SectionShell>

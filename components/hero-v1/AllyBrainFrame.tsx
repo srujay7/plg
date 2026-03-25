@@ -60,7 +60,7 @@ export function AllyBrainFrame({
         )}
         style={{
           background:
-            "radial-gradient(ellipse at center, rgba(0,212,255,0.08) 0%, transparent 70%)",
+            "radial-gradient(ellipse at center, rgba(16,185,129,0.08) 0%, transparent 70%)",
         }}
       />
 

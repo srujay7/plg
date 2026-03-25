@@ -66,7 +66,7 @@ function AIPulse({ target }: { target: PulseTarget }) {
         className="absolute -inset-6 rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgba(0,212,255,0.3) 0%, transparent 70%)",
+            "radial-gradient(circle, rgba(16,185,129,0.3) 0%, transparent 70%)",
         }}
         animate={{ scale: [1, 1.8, 1], opacity: [0.6, 0.1, 0.6] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -82,7 +82,7 @@ function AIPulse({ target }: { target: PulseTarget }) {
         className="w-4 h-4 rounded-full bg-cyan-400"
         style={{
           boxShadow:
-            "0 0 14px 6px rgba(0,212,255,0.6), 0 0 32px 12px rgba(0,212,255,0.2)",
+            "0 0 14px 6px rgba(16,185,129,0.6), 0 0 32px 12px rgba(16,185,129,0.2)",
         }}
       />
     </motion.div>
@@ -122,9 +122,9 @@ export function PDPViewport({ state, compact = false }: PDPViewportProps) {
   /* ── Mobile compact version ── */
   if (compact) {
     return (
-      <div className="w-full rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden">
+      <div className="w-full rounded-xl border border-slate-200 bg-white backdrop-blur-sm overflow-hidden">
         <div className="p-3 flex gap-3">
-          <div className="w-16 h-20 flex-shrink-0 rounded overflow-hidden relative bg-gray-100">
+          <div className="w-16 h-20 flex-shrink-0 rounded overflow-hidden relative bg-slate-100">
             <Image
               src={imgConfig.src}
               alt="Nourra product"
@@ -159,18 +159,18 @@ export function PDPViewport({ state, compact = false }: PDPViewportProps) {
 
   return (
     <div
-      className="w-full rounded-xl overflow-hidden border border-white/10 shadow-2xl shadow-black/30 relative bg-white"
+      className="w-full rounded-xl overflow-hidden border border-slate-200 shadow-2xl shadow-black/10 relative bg-white"
       style={{ height: pdpViewportHeight }}
     >
       {/* Browser chrome */}
-      <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 border-b border-gray-200 flex-shrink-0">
+      <div className="flex items-center gap-2 px-3 py-2 bg-slate-100 border-b border-slate-200 flex-shrink-0">
         <div className="flex gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
           <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
           <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
         </div>
-        <div className="flex-1 mx-2 px-3 py-1 rounded-md bg-white border border-gray-200">
-          <span className="text-[10px] text-gray-400 font-mono">
+        <div className="flex-1 mx-2 px-3 py-1 rounded-md bg-white border border-slate-200">
+          <span className="text-[10px] text-slate-400 font-mono">
             retailer.com/nourra-superfood-shake
           </span>
         </div>
@@ -184,7 +184,7 @@ export function PDPViewport({ state, compact = false }: PDPViewportProps) {
       />
 
       {/* PDP content area */}
-      <div className="relative overflow-hidden" style={{ height: pdpViewportHeight - 38 - 68 }}>
+      <div className="relative overflow-hidden" style={{ height: pdpViewportHeight - 38 - 78 }}>
         {/* AI Pulse */}
         <AIPulse target={pulseTarget} />
 
@@ -216,7 +216,7 @@ export function PDPViewport({ state, compact = false }: PDPViewportProps) {
           <div className="flex gap-5">
             {/* Product Image */}
             <div className="w-[42%] flex-shrink-0">
-              <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-50">
+              <div className="relative aspect-square rounded-lg overflow-hidden bg-slate-50">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={productImage}
@@ -248,7 +248,7 @@ export function PDPViewport({ state, compact = false }: PDPViewportProps) {
               <AnimatePresence mode="wait">
                 <motion.h3
                   key={title}
-                  className="text-[15px] font-semibold text-gray-900 leading-snug mb-2 whitespace-pre-line rounded px-1 -mx-1"
+                  className="text-[15px] font-semibold text-slate-900 leading-snug mb-2 whitespace-pre-line rounded px-1 -mx-1"
                   initial={{ opacity: 0, backgroundColor: "rgba(251, 191, 36, 0.12)" }}
                   animate={{ opacity: 1, backgroundColor: "rgba(251, 191, 36, 0)" }}
                   exit={{ opacity: 0 }}
@@ -265,8 +265,8 @@ export function PDPViewport({ state, compact = false }: PDPViewportProps) {
 
               {/* Price + Promo Badge */}
               <div className="flex items-baseline gap-2 mb-3">
-                <span className="text-xl font-bold text-gray-900">$3.49</span>
-                <span className="text-[11px] text-gray-400">
+                <span className="text-xl font-bold text-slate-900">$3.49</span>
+                <span className="text-[11px] text-slate-400">
                   ($0.29 / Fl Oz)
                 </span>
                 <AnimatePresence>
@@ -287,9 +287,9 @@ export function PDPViewport({ state, compact = false }: PDPViewportProps) {
                   {bullets.map((bullet, i) => (
                     <li
                       key={i}
-                      className="text-[12px] text-gray-600 leading-relaxed flex gap-1.5"
+                      className="text-[12px] text-slate-600 leading-relaxed flex gap-1.5"
                     >
-                      <span className="text-gray-400 flex-shrink-0 mt-0.5">
+                      <span className="text-slate-400 flex-shrink-0 mt-0.5">
                         •
                       </span>
                       <span>{bullet}</span>
@@ -299,7 +299,7 @@ export function PDPViewport({ state, compact = false }: PDPViewportProps) {
               </AnimatePresence>
 
               {/* Add to Cart */}
-              <div className="w-full py-2.5 rounded-full bg-gradient-to-b from-amber-400 to-amber-500 text-center text-[12px] text-gray-900 font-semibold shadow-sm">
+              <div className="w-full py-2.5 rounded-full bg-gradient-to-b from-amber-400 to-amber-500 text-center text-[12px] text-slate-900 font-semibold shadow-sm">
                 Add to Cart
               </div>
             </div>

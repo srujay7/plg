@@ -82,24 +82,20 @@ export function HeroCopy({
               transition: { duration: 0.6, ease: easing.outExpo },
             },
           }}
-          className="flex flex-wrap gap-x-2 gap-y-1 mb-8"
+          className="flex flex-wrap gap-2 mb-8"
         >
-          {purchaseMoments.map((moment, i) => {
+          {purchaseMoments.map((moment) => {
             const isActive = moment.label === currentMoment;
             return (
-              <span key={moment.label} className="flex items-center gap-2">
-                {i > 0 && (
-                  <span className="text-text-muted/30 text-[10px]">·</span>
-                )}
-                <span
-                  className={`text-[11px] tracking-wide transition-all duration-400 ${
-                    isActive
-                      ? "text-text-primary font-semibold"
-                      : "text-text-muted/60"
-                  }`}
-                >
-                  {moment.label}
-                </span>
+              <span
+                key={moment.label}
+                className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-all duration-400 ${
+                  isActive
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                    : "border-slate-200 bg-white text-slate-500"
+                }`}
+              >
+                {moment.label}
               </span>
             );
           })}

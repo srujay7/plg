@@ -22,7 +22,7 @@ export function VisibilityGauge({
   const size = (radius + stroke) * 2;
 
   return (
-    <div className={cn("flex flex-col items-center", className)}>
+    <div className={cn("relative flex items-center justify-center", className)} style={{ width: size, height: size }}>
       <svg
         width={size}
         height={size}
@@ -35,7 +35,7 @@ export function VisibilityGauge({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="rgba(100, 120, 160, 0.15)"
+          stroke="#E2E8F0"
           strokeWidth={stroke}
         />
         {/* Animated progress arc */}
@@ -55,13 +55,13 @@ export function VisibilityGauge({
         />
         <defs>
           <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#ff6b35" />
-            <stop offset="100%" stopColor="#00d4ff" />
+            <stop offset="0%" stopColor="#84CC16" />
+            <stop offset="100%" stopColor="#10B981" />
           </linearGradient>
         </defs>
       </svg>
       {/* Score text overlay */}
-      <div className="absolute flex flex-col items-center justify-center">
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
         <motion.span
           className="text-5xl font-bold text-text-primary"
           initial={{ opacity: 0 }}

@@ -43,7 +43,7 @@ export function ConnectorPulse({
             isHorizontal ? "h-px w-8" : "w-px h-8"
           )}
           style={{
-            boxShadow: "0 0 8px rgba(0,212,255,0.6), 0 0 16px rgba(0,212,255,0.3)",
+            boxShadow: "0 0 8px rgba(16,185,129,0.6), 0 0 16px rgba(16,185,129,0.3)",
           }}
           initial={
             isHorizontal

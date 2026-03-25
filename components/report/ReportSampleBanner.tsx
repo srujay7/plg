@@ -4,9 +4,10 @@ import { cn } from "@/lib/cn";
 
 interface ReportSampleBannerProps {
   className?: string;
+  onRequestReport?: () => void;
 }
 
-export function ReportSampleBanner({ className }: ReportSampleBannerProps) {
+export function ReportSampleBanner({ className, onRequestReport }: ReportSampleBannerProps) {
   return (
     <div
       className={cn(
@@ -16,15 +17,14 @@ export function ReportSampleBanner({ className }: ReportSampleBannerProps) {
     >
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-3 px-6 py-3 text-center sm:flex-row sm:justify-between sm:text-left md:px-8">
         <p className="text-sm font-medium text-orange">
-          This is a sample report. Request your custom AI Visibility Report
-          below.
+          You&apos;re viewing a sample report — get one tailored to your brand.
         </p>
-        <a
-          href="#book-demo"
+        <button
+          onClick={onRequestReport}
           className="shrink-0 rounded-lg bg-orange px-4 py-2 text-xs font-semibold text-white transition-opacity hover:opacity-90"
         >
           Get Your Custom Report
-        </a>
+        </button>
       </div>
     </div>
   );

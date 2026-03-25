@@ -7,7 +7,7 @@ import { SectionShell } from "@/components/layout/SectionShell";
 import { ContentContainer } from "@/components/layout/ContentContainer";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { MetricCard } from "@/components/ui/MetricCard";
-import { Button } from "@/components/ui/Button";
+import { ReportButton } from "@/components/report/ReportButton";
 import { staggerContainer, fadeInUp } from "@/lib/motion";
 import { cn } from "@/lib/cn";
 
@@ -77,10 +77,10 @@ export function CaseStudySection() {
           viewport={{ once: true, amount: 0.5 }}
           className="flex justify-center mt-12"
         >
-          <Button href="#book-demo" size="lg">
+          <ReportButton size="lg">
             See how Content Agent can work for you
             <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+          </ReportButton>
         </motion.div>
       </ContentContainer>
     </SectionShell>

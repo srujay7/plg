@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { SectionShell } from "@/components/layout/SectionShell";
 import { ContentContainer } from "@/components/layout/ContentContainer";
@@ -10,6 +11,7 @@ import { ReportSampleBanner } from "@/components/report/ReportSampleBanner";
 import { VisibilityGauge } from "@/components/report/VisibilityGauge";
 import { CompetitorRankingChart } from "@/components/report/CompetitorRankingChart";
 import { RufusPhraseMatrix } from "@/components/report/RufusPhraseMatrix";
+import { ReportRequestModal } from "@/components/report/ReportRequestModal";
 import { staggerContainer, fadeInUp } from "@/lib/motion";
 import { cn } from "@/lib/cn";
 import {
@@ -32,13 +34,15 @@ function YourBrandPill() {
 const yourBrandScore = brandScores.find((b) => b.isYourBrand)!;
 
 export default function SampleReportPage() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-midnight">
       {/* ── Section 1: Sample Banner ── */}
-      <ReportSampleBanner />
+      <ReportSampleBanner onRequestReport={() => setModalOpen(true)} />
 
       {/* ── Section 2: Report Header ── */}
-      <SectionShell>
+      <SectionShell className="py-12 md:py-16">
         <ContentContainer size="wide">
           <motion.div
             variants={staggerContainer}
@@ -78,14 +82,14 @@ export default function SampleReportPage() {
       </SectionShell>
 
       {/* ── Section 3: AI Visibility Score ── */}
-      <SectionShell dark>
+      <SectionShell dark className="py-12 md:py-16">
         <ContentContainer size="wide">
           <SectionHeading
             eyebrow="AI Visibility Score"
             heading="How visible is your brand to AI?"
             subheading="Your overall AI Visibility Score measures how often AI answer engines cite, mention, and recommend your products."
             align="center"
-            className="mb-16"
+            className="mb-10"
           />
 
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
@@ -104,7 +108,7 @@ export default function SampleReportPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="mt-16 grid grid-cols-2 gap-4 md:grid-cols-4"
+            className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4"
           >
             <MetricCard value="42" label="AI Visibility Score" delay={0} />
             <MetricCard value="#5" label="Category Ranking" delay={0.1} />
@@ -115,7 +119,7 @@ export default function SampleReportPage() {
       </SectionShell>
 
       {/* ── Section 4: Top Keywords ── */}
-      <SectionShell>
+      <SectionShell className="py-12 md:py-16">
         <ContentContainer size="wide">
           <SectionHeading
             eyebrow="Keyword Analysis"
@@ -199,7 +203,7 @@ export default function SampleReportPage() {
       </SectionShell>
 
       {/* ── Section 5: Rufus Phrases ── */}
-      <SectionShell dark>
+      <SectionShell dark className="py-12 md:py-16">
         <ContentContainer size="wide">
           <SectionHeading
             eyebrow="Answer Engine Analysis"
@@ -216,14 +220,14 @@ export default function SampleReportPage() {
       </SectionShell>
 
       {/* ── Section 6: SKU Optimization ── */}
-      <SectionShell>
+      <SectionShell className="py-12 md:py-16">
         <ContentContainer size="wide">
           <SectionHeading
             eyebrow="Optimization Preview"
             heading="How We'd Optimize Your Top SKU"
             subheading="See how Content Agent would rewrite your product listing to improve AI visibility and Rufus citations."
             align="center"
-            className="mb-16"
+            className="mb-10"
           />
 
           <motion.div
@@ -231,7 +235,7 @@ export default function SampleReportPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
-            className="space-y-12"
+            className="space-y-6"
           >
             {skuOptimization.map((example) => (
               <motion.div
@@ -251,7 +255,7 @@ export default function SampleReportPage() {
                     <p className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
                       Before
                     </p>
-                    <div className="rounded-lg bg-[#0a0e1a] p-4">
+                    <div className="rounded-lg bg-slate-50 p-4">
                       {example.before.split("\n").map((line, i) => (
                         <p
                           key={i}
@@ -271,7 +275,7 @@ export default function SampleReportPage() {
                     <p className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-cyan">
                       After
                     </p>
-                    <div className="rounded-lg border border-cyan/20 bg-[#0a0e1a] p-4">
+                    <div className="rounded-lg border border-cyan/20 bg-slate-50 p-4">
                       {example.after.split("\n").map((line, i) => (
                         <p
                           key={i}
@@ -306,7 +310,7 @@ export default function SampleReportPage() {
       </SectionShell>
 
       {/* ── Section 7: Bottom CTA ── */}
-      <SectionShell dark>
+      <SectionShell dark className="py-12 md:py-16">
         <ContentContainer size="narrow">
           <div className="text-center">
             <motion.div
@@ -324,14 +328,16 @@ export default function SampleReportPage() {
                 the AI shelf.
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <a
-                  href="#book-demo"
-                  className="inline-flex items-center rounded-lg bg-[#00d4ff] px-8 py-3 text-sm font-semibold text-[#0a0e1a] transition-opacity hover:opacity-90"
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="inline-flex items-center rounded-lg bg-[#10B981] px-8 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                 >
                   Request Custom Report
-                </a>
+                </button>
                 <a
-                  href="#book-demo"
+                  href="https://www.commerceiq.ai/demo"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center rounded-lg border border-border px-8 py-3 text-sm font-semibold text-text-primary transition-colors hover:border-cyan/40 hover:text-cyan"
                 >
                   Book a Demo
@@ -341,6 +347,9 @@ export default function SampleReportPage() {
           </div>
         </ContentContainer>
       </SectionShell>
+
+      {/* ── Report Request Modal ── */}
+      <ReportRequestModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 }

@@ -63,7 +63,7 @@ export const moduleActivate: Variants = {
   active: {
     opacity: 1,
     scale: 1,
-    borderColor: "rgba(0, 212, 255, 0.4)",
+    borderColor: "rgba(16, 185, 129, 0.4)",
     transition: { duration: 0.5, ease: easing.outCubic },
   },
 };

@@ -48,7 +48,7 @@ export function ProductDemoSection() {
                   <p className="text-xs uppercase tracking-[0.2em] font-medium text-text-muted mb-4">
                     Before
                   </p>
-                  <div className="rounded-lg bg-[#0a0e1a] p-4">
+                  <div className="rounded-lg bg-slate-50 p-4">
                     {example.before.split("\n").map((line, i) => (
                       <p
                         key={i}
@@ -68,7 +68,7 @@ export function ProductDemoSection() {
                   <p className="text-xs uppercase tracking-[0.2em] font-medium text-cyan mb-4">
                     After
                   </p>
-                  <div className="rounded-lg bg-[#0a0e1a] border border-cyan/20 p-4">
+                  <div className="rounded-lg bg-slate-50 border border-cyan/20 p-4">
                     {example.after.split("\n").map((line, i) => (
                       <p
                         key={i}

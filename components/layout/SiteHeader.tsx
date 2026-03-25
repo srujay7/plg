@@ -66,15 +66,15 @@ export function SiteHeader() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
         scrolled
-          ? "border-b border-[#1a2340] bg-[#0a0e1a]/80 backdrop-blur-xl"
+          ? "border-b border-slate-200 bg-white/80 backdrop-blur-xl"
           : "bg-transparent"
       )}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-8">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2">
-          <span className="text-lg font-bold tracking-tight text-white">
-            Content <span className="text-[#00d4ff]">Agent</span>
+          <span className="text-lg font-bold tracking-tight text-slate-900">
+            Content <span className="text-[#10B981]">Agent</span>
           </span>
         </a>
 
@@ -84,7 +84,7 @@ export function SiteHeader() {
             <li key={link.label}>
               <a
                 href={link.href}
-                className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
+                className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-900"
               >
                 {link.label}
               </a>
@@ -94,8 +94,10 @@ export function SiteHeader() {
 
         {/* Desktop CTA */}
         <a
-          href="#book-demo"
-          className="hidden rounded-lg bg-[#00d4ff] px-5 py-2 text-sm font-semibold text-[#0a0e1a] transition-opacity hover:opacity-90 md:inline-block"
+          href="https://www.commerceiq.ai/demo"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden rounded-lg bg-[#10B981] px-5 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 md:inline-block"
         >
           Book Demo
         </a>
@@ -104,7 +106,7 @@ export function SiteHeader() {
         <button
           type="button"
           aria-label="Open menu"
-          className="inline-flex items-center justify-center rounded-md p-2 text-slate-300 hover:text-white md:hidden"
+          className="inline-flex items-center justify-center rounded-md p-2 text-slate-500 hover:text-slate-900 md:hidden"
           onClick={() => setMobileOpen(true)}
         >
           <Menu className="h-6 w-6" />
@@ -123,7 +125,7 @@ export function SiteHeader() {
               animate="open"
               exit="closed"
               transition={{ duration: timing.fast }}
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
               onClick={closeDrawer}
               aria-hidden
             />
@@ -135,16 +137,16 @@ export function SiteHeader() {
               initial="closed"
               animate="open"
               exit="closed"
-              className="fixed inset-y-0 right-0 z-50 flex w-72 flex-col border-l border-[#1a2340] bg-[#0a0e1a] p-6"
+              className="fixed inset-y-0 right-0 z-50 flex w-72 flex-col border-l border-slate-200 bg-white p-6"
             >
               <div className="flex items-center justify-between">
-                <span className="text-lg font-bold tracking-tight text-white">
-                  Content <span className="text-[#00d4ff]">Agent</span>
+                <span className="text-lg font-bold tracking-tight text-slate-900">
+                  Content <span className="text-[#10B981]">Agent</span>
                 </span>
                 <button
                   type="button"
                   aria-label="Close menu"
-                  className="rounded-md p-2 text-slate-300 hover:text-white"
+                  className="rounded-md p-2 text-slate-500 hover:text-slate-900"
                   onClick={closeDrawer}
                 >
                   <X className="h-5 w-5" />
@@ -157,7 +159,7 @@ export function SiteHeader() {
                     <a
                       href={link.href}
                       onClick={closeDrawer}
-                      className="block rounded-md px-3 py-2 text-base font-medium text-slate-300 transition-colors hover:bg-[#111730] hover:text-white"
+                      className="block rounded-md px-3 py-2 text-base font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900"
                     >
                       {link.label}
                     </a>
@@ -167,9 +169,11 @@ export function SiteHeader() {
 
               <div className="mt-auto pt-6">
                 <a
-                  href="#book-demo"
+                  href="https://www.commerceiq.ai/demo"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={closeDrawer}
-                  className="block w-full rounded-lg bg-[#00d4ff] px-5 py-3 text-center text-sm font-semibold text-[#0a0e1a] transition-opacity hover:opacity-90"
+                  className="block w-full rounded-lg bg-[#10B981] px-5 py-3 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
                 >
                   Book Demo
                 </a>

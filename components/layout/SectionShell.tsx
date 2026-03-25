@@ -28,7 +28,7 @@ export function SectionShell({
       viewport={{ once: true, margin: "-100px" }}
       className={cn(
         "py-24 md:py-32",
-        dark ? "bg-[#080c16]" : "bg-transparent",
+        dark ? "bg-slate-50" : "bg-transparent",
         className
       )}
     >

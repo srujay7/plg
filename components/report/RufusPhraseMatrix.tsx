@@ -77,7 +77,7 @@ export function RufusPhraseMatrix({
       {/* Legend */}
       <div className="mt-4 flex flex-wrap items-center gap-6 text-xs text-text-muted">
         <span className="flex items-center gap-1.5">
-          <Check className="h-3.5 w-3.5 text-green" /> Cited
+          <Check className="h-3.5 w-3.5 text-green" /> Cited in Top 3
         </span>
         <span className="flex items-center gap-1.5">
           <Circle className="h-3.5 w-3.5 text-orange" /> Mentioned

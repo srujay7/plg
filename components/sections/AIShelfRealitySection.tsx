@@ -45,15 +45,15 @@ export function AIShelfRealitySection() {
                   Old Model
                 </p>
                 <div className="flex items-center gap-3 text-text-secondary">
-                  <span className="rounded-lg bg-[#1a1f2e] px-3 py-1.5 text-sm font-medium">
+                  <span className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-600">
                     Search
                   </span>
                   <ArrowRight className="w-4 h-4 text-text-muted flex-shrink-0" />
-                  <span className="rounded-lg bg-[#1a1f2e] px-3 py-1.5 text-sm font-medium">
+                  <span className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-600">
                     Click
                   </span>
                   <ArrowRight className="w-4 h-4 text-text-muted flex-shrink-0" />
-                  <span className="rounded-lg bg-[#1a1f2e] px-3 py-1.5 text-sm font-medium">
+                  <span className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-600">
                     Purchase
                   </span>
                 </div>

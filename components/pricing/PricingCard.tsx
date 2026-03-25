@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/cn";
 import { fadeInUp, easing, timing } from "@/lib/motion";
 import { Check, X } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { ReportButton } from "@/components/report/ReportButton";
 import type { PricingTier } from "@/data/pricingContent";
 
 interface PricingCardProps {
@@ -71,14 +71,13 @@ export function PricingCard({ tier, delay = 0 }: PricingCardProps) {
         ))}
       </ul>
 
-      <Button
+      <ReportButton
         variant={tier.highlighted ? "primary" : "secondary"}
-        href={tier.cta.href}
         size="lg"
         className="w-full justify-center"
       >
         {tier.cta.label}
-      </Button>
+      </ReportButton>
     </motion.div>
   );
 }

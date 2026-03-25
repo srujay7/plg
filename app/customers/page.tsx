@@ -3,6 +3,7 @@ import { SectionShell } from "@/components/layout/SectionShell";
 import { ContentContainer } from "@/components/layout/ContentContainer";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
+import { ReportButton } from "@/components/report/ReportButton";
 import { MetricCard } from "@/components/ui/MetricCard";
 import { caseStudies } from "@/data/caseStudies";
 import { Quote } from "lucide-react";
@@ -129,10 +130,10 @@ export default function CustomersPage() {
               align="center"
             />
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
-              <Button href="#book-demo" size="lg">
+              <ReportButton size="lg">
                 See Content Agent in action
-              </Button>
-              <Button variant="secondary" href="#book-demo" size="lg">
+              </ReportButton>
+              <Button variant="secondary" href="https://www.commerceiq.ai/demo" size="lg">
                 Talk to our team
               </Button>
             </div>

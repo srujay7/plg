@@ -86,7 +86,7 @@ export function AgencyComparisonGraphic() {
       {/* AI Agency Side */}
       <motion.div
         variants={fadeInUp}
-        className="rounded-xl border border-cyan/30 bg-cyan/[0.03] p-8 shadow-[0_0_40px_-12px_rgba(0,212,255,0.1)]"
+        className="rounded-xl border border-cyan/30 bg-cyan/[0.03] p-8 shadow-[0_0_40px_-12px_rgba(16,185,129,0.1)]"
       >
         <p className="text-xs uppercase tracking-[0.2em] font-medium text-cyan mb-6">
           AI Content Agency
