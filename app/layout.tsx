@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
-import { SiteHeader } from "@/components/layout/SiteHeader";
-import { SiteFooter } from "@/components/layout/SiteFooter";
-import { ReportModalProvider } from "@/components/report/ReportModalProvider";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -30,11 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={manrope.variable}>
       <body className="min-h-screen bg-midnight text-text-primary font-sans antialiased">
-        <ReportModalProvider>
-          <SiteHeader />
-          <main>{children}</main>
-          <SiteFooter />
-        </ReportModalProvider>
+        {children}
       </body>
     </html>
   );
