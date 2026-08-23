@@ -5,16 +5,11 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { PrimaryButton, SecondaryButton } from "@/components/plg/shared/Buttons";
 import { TestimonialCarousel } from "@/components/plg/SignupFlow/TestimonialCarousel";
+import { RETAILER_OPTIONS } from "@/data/retailers";
 
 // Sign-up flow (PLG-01/02): 3 screens — Sign up (email + name), Verify (email OTP),
 // Report setup (brand + description + ASIN) — as a client-side state machine.
 // Ported from aeo-plg-signup-mock-dark_5.html's `state`/`render()` globals.
-
-const STEP_META = [
-  { key: 1, label: "Sign up" },
-  { key: 2, label: "Verify" },
-  { key: 3, label: "Report setup" },
-] as const;
 
 // Business-email gate (PLG-02): free-domain providers are blocked. Engineering owns the
 // real blocklist; this is a representative sample for the mock.
@@ -56,48 +51,6 @@ function PrecisionBanner({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Stepper({ current }: { current: number }) {
-  return (
-    <div className="mb-10 flex w-full items-start">
-      {STEP_META.map((s) => {
-        const done = s.key < current;
-        const isCurrent = s.key === current;
-        return (
-          <div key={s.key} className="relative flex flex-1 flex-col items-center px-1 text-center">
-            {s.key !== 1 && (
-              <div
-                className={cn(
-                  "absolute right-1/2 top-[13px] h-0.5 w-full",
-                  done ? "bg-[var(--plg-accent)]" : "bg-white/10"
-                )}
-              />
-            )}
-            <div
-              className={cn(
-                "relative z-10 mb-2 flex h-[26px] w-[26px] items-center justify-center rounded-full border-2 text-xs font-bold",
-                done && "border-[var(--plg-accent)] bg-[var(--plg-accent)] text-white",
-                isCurrent &&
-                  "border-[var(--plg-indigo-btn)] bg-[var(--plg-indigo-btn)] text-white shadow-[0_0_0_4px_rgba(91,84,232,.22)]",
-                !done && !isCurrent && "border-white/15 bg-white/[0.03] text-[var(--plg-muted)]"
-              )}
-            >
-              {done ? "✓" : s.key}
-            </div>
-            <div
-              className={cn(
-                "text-xs font-semibold",
-                isCurrent ? "text-[var(--plg-ink)]" : done ? "text-[var(--plg-text2)]" : "text-[var(--plg-muted)]"
-              )}
-            >
-              {s.label}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 export function SignupFlow() {
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -108,6 +61,7 @@ export function SignupFlow() {
   const [resent, setResent] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [brand, setBrand] = useState("");
+  const [retailer, setRetailer] = useState(RETAILER_OPTIONS[0].value);
   const [description, setDescription] = useState("");
   const [asin, setAsin] = useState("");
   const [handoff, setHandoff] = useState(false);
@@ -139,22 +93,18 @@ export function SignupFlow() {
   function handleContinueToReportSetup() {
     if (handoff) return;
     setHandoff(true);
-    setTimeout(() => router.push("/plg/report"), 900);
+    const params = new URLSearchParams({ brand: brand.trim() || "Your brand" });
+    setTimeout(() => router.push(`/plg/report?${params.toString()}`), 900);
   }
 
   const otpFilled = useMemo(() => otp.every((d) => d.length === 1), [otp]);
 
   return (
     <div className="flex min-h-[max(520px,calc(100vh-160px))] w-full flex-col md:flex-row">
-      <div className="flex flex-1 items-start justify-start px-6 py-14 md:px-16 md:py-[76px]">
+      <div className="flex flex-1 items-start justify-start px-6 py-8 md:px-16 md:py-12">
         <div className="w-full max-w-[440px]">
-          <Stepper current={step} />
-
           {step === 1 && (
             <div>
-              <div className="mb-2.5 text-xs font-semibold uppercase tracking-[.04em] text-[var(--plg-accent)]">
-                Step 1 of 3
-              </div>
               <h1 className="mb-2 text-2xl font-bold leading-tight text-[var(--plg-ink)]">
                 See your brand&rsquo;s AI-shelf visibility
               </h1>
@@ -267,9 +217,6 @@ export function SignupFlow() {
               >
                 &larr; Back
               </button>
-              <div className="mb-2.5 text-xs font-semibold uppercase tracking-[.04em] text-[var(--plg-accent)]">
-                Step 2 of 3
-              </div>
               <h1 className="mb-2 text-2xl font-bold leading-tight text-[var(--plg-ink)]">
                 Check your email
               </h1>
@@ -309,9 +256,6 @@ export function SignupFlow() {
               >
                 &larr; Back
               </button>
-              <div className="mb-2.5 text-xs font-semibold uppercase tracking-[.04em] text-[var(--plg-accent)]">
-                Step 3 of 3 &middot; Only if your one free report isn&rsquo;t created yet
-              </div>
               <h1 className="mb-2 text-2xl font-bold leading-tight text-[var(--plg-ink)]">
                 Tell us about your brand
               </h1>
@@ -325,7 +269,27 @@ export function SignupFlow() {
               </PrecisionBanner>
               <div className="mb-4.5">
                 <label className="mb-1.5 block text-[13px] font-semibold text-[var(--plg-ink)]">
-                  Brand name on Amazon
+                  Retailer
+                </label>
+                <select
+                  value={retailer}
+                  onChange={(e) => setRetailer(e.target.value)}
+                  className="w-full rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
+                >
+                  {RETAILER_OPTIONS.map((r) => (
+                    <option key={r.value} value={r.value} disabled={!r.enabled}>
+                      {r.label}
+                      {!r.enabled ? " — coming soon" : ""}
+                    </option>
+                  ))}
+                </select>
+                <div className="mt-1.5 text-xs leading-relaxed text-[var(--plg-muted)]">
+                  Basic launches on Amazon (US) — the rest are on the roadmap.
+                </div>
+              </div>
+              <div className="mb-4.5">
+                <label className="mb-1.5 block text-[13px] font-semibold text-[var(--plg-ink)]">
+                  Brand name on retailer
                 </label>
                 <input
                   type="text"
@@ -337,27 +301,7 @@ export function SignupFlow() {
               </div>
               <div className="mb-4.5">
                 <label className="mb-1.5 block text-[13px] font-semibold text-[var(--plg-ink)]">
-                  Tell us about your brand on Amazon and what categories you sell
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="e.g. We sell premium dry and wet dog food, including grain-free and senior formulas, across 40+ ASINs on Amazon US."
-                  className="min-h-[76px] w-full resize-y rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] px-3.5 py-2.5 text-sm leading-relaxed text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
-                />
-                <div className="mt-1.5 text-xs leading-relaxed text-[var(--plg-muted)]">
-                  <b className="text-[var(--plg-ink)]">Be as specific as possible</b> — exact
-                  sub-categories, formulas, and the shopper needs you serve. The more detail you
-                  give, the more accurately Content Agent can find and rank the right topics for
-                  your brand.
-                </div>
-              </div>
-              <div className="mb-4.5">
-                <label className="mb-1.5 block text-[13px] font-semibold text-[var(--plg-ink)]">
-                  Amazon ASIN URL{" "}
-                  <span className="font-normal text-[var(--plg-muted)]">
-                    (optional — powers your one-SKU teardown)
-                  </span>
+                  Product URL
                 </label>
                 <input
                   type="text"
@@ -366,10 +310,26 @@ export function SignupFlow() {
                   placeholder="https://www.amazon.com/dp/B0XXXXXXX"
                   className="w-full rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
                 />
+                <div className="mt-1.5 text-xs leading-relaxed text-[var(--plg-muted)]">
+                  A SKU that belongs to your brand on Amazon — we&rsquo;ll provide AEO-ready
+                  content for that ASIN.
+                </div>
+              </div>
+              <div className="mb-4.5">
+                <label className="mb-1.5 block text-[13px] font-semibold text-[var(--plg-ink)]">
+                  Tell us about your brand on retailer and what categories you sell{" "}
+                  <span className="font-normal text-[var(--plg-muted)]">(optional)</span>
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="e.g. We sell premium dry and wet dog food, including grain-free and senior formulas, across 40+ SKUs."
+                  className="min-h-[76px] w-full resize-y rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] px-3.5 py-2.5 text-sm leading-relaxed text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
+                />
               </div>
               <PrimaryButton
                 className="w-full"
-                disabled={!brand || !description}
+                disabled={!brand || !asin}
                 onClick={handleContinueToReportSetup}
               >
                 Continue to Content Agent
@@ -383,9 +343,6 @@ export function SignupFlow() {
 
           {step === 3 && handoff && (
             <div>
-              <div className="mb-2.5 text-xs font-semibold uppercase tracking-[.04em] text-[var(--plg-accent)]">
-                Step 3 of 3
-              </div>
               <h1 className="mb-2 text-2xl font-bold leading-tight text-[var(--plg-ink)]">
                 You&rsquo;re all set
               </h1>

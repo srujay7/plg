@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { PrimaryButton } from "@/components/plg/shared/Buttons";
-import { OB_PREFILLED_TOPICS, OB_MORE_TOPICS, META } from "@/data/plgReportData";
+import { CurationMasthead } from "@/components/plg/ReportFlow/CurationMasthead";
+import { OB_PREFILLED_TOPICS, OB_MORE_TOPICS } from "@/data/plgReportData";
 
 const TOPIC_CAP = 10;
 
@@ -11,12 +12,14 @@ const TOPIC_CAP = 10;
 // add, rename-in-place, capped at 10. Ported from renderTopicsScreen()/wireTopicsEvents()
 // in the report mock.
 export function TopicsScreen({
+  brand,
   selectedTopics,
   customTopics,
   onChangeSelected,
   onAddCustomTopic,
   onContinue,
 }: {
+  brand: string;
   selectedTopics: string[];
   customTopics: string[];
   onChangeSelected: (next: string[]) => void;
@@ -63,14 +66,16 @@ export function TopicsScreen({
   }
 
   return (
-    <div className="flex justify-center px-6 py-14">
-      <div className="w-full max-w-[640px] rounded-2xl border border-white/10 bg-white/[0.045] p-11 shadow-[0_30px_80px_rgba(0,0,0,.6)] backdrop-blur-xl">
+    <div>
+      <CurationMasthead brand={brand} />
+      <div className="flex justify-center px-6 py-8">
+      <div className="w-full max-w-[860px] rounded-2xl border border-white/10 bg-white/[0.045] p-11 shadow-[0_30px_80px_rgba(0,0,0,.6)] backdrop-blur-xl">
         <div className="mb-2.5 text-xs font-semibold uppercase tracking-[.1em] text-[var(--plg-accent)]">
           Setting up your report &middot; Step 1 of 2
         </div>
         <h1 className="mb-2.5 text-[25px] font-bold text-[var(--plg-ink)]">Confirm your topics</h1>
         <p className="mb-5.5 max-w-[64ch] text-[14.5px] leading-relaxed text-[var(--plg-text2)]">
-          These are the shopper categories we&rsquo;ll measure <b className="text-[var(--plg-ink)]">{META.brand}</b>{" "}
+          These are the shopper categories we&rsquo;ll measure <b className="text-[var(--plg-ink)]">{brand}</b>{" "}
           against on Alexa AI. We pre-filled the 5 most relevant.
         </p>
 
@@ -186,6 +191,7 @@ export function TopicsScreen({
           Next, we&rsquo;ll show you the shopper prompts behind each topic before generating your
           report.
         </div>
+      </div>
       </div>
     </div>
   );

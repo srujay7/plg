@@ -70,6 +70,68 @@ export const STACKUP: StackupTopic[] = [
   },
 ];
 
+// Named head-to-head competitor comparison (Competitors tab): reuses the same AI-shelf
+// score scale as the leaderboard/stack-up above (0-100, position-weighted composite) —
+// intentionally not a separate vis%/SOV%/rank breakdown per competitor, since that
+// granularity only exists for the brand itself (derived from PROMPTS). Ported from the
+// mock's COMPETITORS / TOPIC_COMPETITOR_SCORES.
+export const COMPETITORS = [
+  "Purina Pro Plan",
+  "Blue Buffalo",
+  "Hill's Science Diet",
+  "Royal Canin",
+  "Iams",
+  "Wellness Core",
+];
+
+export const TOPIC_COMPETITOR_SCORES: Record<string, Record<string, number>> = {
+  "Dry dog food": {
+    "Purina Pro Plan": 93,
+    "Blue Buffalo": 80,
+    "Hill's Science Diet": 58,
+    "Royal Canin": 62,
+    Iams: 51,
+    "Wellness Core": 44,
+    You: 71,
+  },
+  "Senior dog food": {
+    "Purina Pro Plan": 90,
+    "Blue Buffalo": 88,
+    "Hill's Science Diet": 69,
+    "Royal Canin": 60,
+    Iams: 55,
+    "Wellness Core": 48,
+    You: 74,
+  },
+  "Grain-free dog food": {
+    "Purina Pro Plan": 70,
+    "Blue Buffalo": 66,
+    "Hill's Science Diet": 52,
+    "Royal Canin": 65,
+    Iams: 40,
+    "Wellness Core": 81,
+    You: 29,
+  },
+  "Puppy food": {
+    "Purina Pro Plan": 91,
+    "Blue Buffalo": 85,
+    "Hill's Science Diet": 60,
+    "Royal Canin": 62,
+    Iams: 57,
+    "Wellness Core": 39,
+    You: 53,
+  },
+  "Sensitive stomach dog food": {
+    "Purina Pro Plan": 84,
+    "Blue Buffalo": 71,
+    "Hill's Science Diet": 79,
+    "Royal Canin": 58,
+    Iams: 52,
+    "Wellness Core": 60,
+    You: 66,
+  },
+};
+
 export const META = {
   brand: "Acme Pet Co.",
   company: "Acme Pet Co.",
@@ -78,6 +140,14 @@ export const META = {
   category: "dog food",
   runDate: "2026-08-10",
   reportId: "8f3k2x9a",
+};
+
+// Brand-level revenue-at-risk estimate (PLG-05): directional, not measured — see the
+// Academy page and PRD open questions for the method (AI Visibility/Rank gap × category
+// query volume (SQP) × conversion × AOV, scoped to Alexa AI/AEO traffic only).
+export const BRAND_RISK = {
+  low: 1_200_000,
+  high: 1_800_000,
 };
 
 // ---------- topic + prompt curation bank (Topics / Prompts screens) ----------

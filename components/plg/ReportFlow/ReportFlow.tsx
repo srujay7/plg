@@ -1,14 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Topbar, type ProductScreen } from "@/components/plg/ReportFlow/Topbar";
+import type { TabKey } from "@/components/plg/ReportFlow/reportTabs";
+import { ResearchScreen } from "@/components/plg/ReportFlow/ResearchScreen";
 import { TopicsScreen } from "@/components/plg/ReportFlow/TopicsScreen";
+import { GeneratingPromptsScreen } from "@/components/plg/ReportFlow/GeneratingPromptsScreen";
 import { PromptsScreen } from "@/components/plg/ReportFlow/PromptsScreen";
 import { WaitScreen } from "@/components/plg/ReportFlow/WaitScreen";
 import { ReportView } from "@/components/plg/ReportFlow/ReportView";
-import { DefinitionsPanel } from "@/components/plg/ReportFlow/DefinitionsPanel";
 import { TalkToSalesModal } from "@/components/plg/shared/TalkToSalesModal";
 import {
+  META,
   OB_PREFILLED_TOPICS,
   OB_PROMPT_BANK,
   OB_UNCOVERED_TOPICS,
@@ -17,18 +21,29 @@ import { syncPromptsForTopics, type CuratedPrompt } from "@/lib/plg";
 
 // Orchestrates the product experience that sits between sign-up and the finished report
 // (PLG-03 through PLG-07): Topics -> Prompts -> wait/generating -> the report itself, plus
-// the persistent Home/Topics/Prompts nav that lets a user jump back into curation any time.
+// the single top Topbar, which shows no nav options until the report itself is showing —
+// then it becomes the report's own section tabs.
 export function ReportFlow() {
-  const [screen, setScreen] = useState<ProductScreen>("topics");
+  // The brand entered at sign-up (PLG-01, Screen 4) travels here via ?brand= — falls back to
+  // the demo brand when visiting this page directly (e.g. via the nav) without going through
+  // sign-up first. The report's own data (KPIs, leaderboard, teardown, etc.) stays tied to
+  // the static demo dataset in plgReportData — only the curation-phase masthead/copy uses the
+  // real input, since there's no backend yet to regenerate report content per brand.
+  const searchParams = useSearchParams();
+  const brand = searchParams.get("brand")?.trim() || META.brand;
+
+  // Round-tripping through Academy (or any other page) shouldn't restart the curation flow —
+  // ?screen=report (set by Topbar's Academy link, and forwarded by Academy's back link) skips
+  // straight to the finished report instead of defaulting to "research".
+  const initialScreen = searchParams.get("screen") === "report" ? "report" : "research";
+  const [screen, setScreen] = useState<ProductScreen>(initialScreen);
+  const [tab, setTab] = useState<TabKey>("brand");
   const [selectedTopics, setSelectedTopics] = useState<string[]>(OB_PREFILLED_TOPICS.slice());
   const [customTopics, setCustomTopics] = useState<string[]>([]);
   const [prompts, setPrompts] = useState<CuratedPrompt[]>([]);
-  const [defsOpen, setDefsOpen] = useState(false);
-  const [defsAnchor, setDefsAnchor] = useState<string | null>(null);
   const [modal, setModal] = useState<"pilot" | "upgrade" | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
 
-  function goToPromptsFromTopics() {
+  function finishGeneratingPrompts() {
     setPrompts((prev) => syncPromptsForTopics(prev, selectedTopics, OB_PROMPT_BANK, OB_UNCOVERED_TOPICS));
     setScreen("prompts");
   }
@@ -38,48 +53,38 @@ export function ReportFlow() {
     setSelectedTopics((prev) => [...prev, topic]);
   }
 
-  function openDefs(anchor: string) {
-    setDefsAnchor(anchor || null);
-    setDefsOpen(true);
-  }
-
-  function flashToast(label: string) {
-    setToast(label);
-    setTimeout(() => setToast(null), 1200);
-  }
-
-  function handleNavigate(next: ProductScreen) {
-    if (next === "report" && prompts.length === 0) {
-      // Home before a report has ever been generated — treat it the same as finishing setup.
-      goToPromptsFromTopics();
-      return;
-    }
-    setScreen(next);
-  }
-
   return (
     <div>
       <Topbar
         screen={screen}
-        onNavigate={handleNavigate}
-        onCopyLink={() => flashToast("Link copied")}
-        onExport={() => flashToast("Exporting…")}
-        onShare={() => flashToast("Share dialog")}
+        brand={brand}
+        activeTab={tab}
+        onTabChange={setTab}
         onPilotClick={() => setModal("pilot")}
       />
 
+      {screen === "research" && (
+        <ResearchScreen brand={brand} onDone={() => setScreen("topics")} />
+      )}
+
       {screen === "topics" && (
         <TopicsScreen
+          brand={brand}
           selectedTopics={selectedTopics}
           customTopics={customTopics}
           onChangeSelected={setSelectedTopics}
           onAddCustomTopic={handleAddCustomTopic}
-          onContinue={goToPromptsFromTopics}
+          onContinue={() => setScreen("generatingPrompts")}
         />
+      )}
+
+      {screen === "generatingPrompts" && (
+        <GeneratingPromptsScreen onDone={finishGeneratingPrompts} />
       )}
 
       {screen === "prompts" && (
         <PromptsScreen
+          brand={brand}
           prompts={prompts}
           onChangePrompts={setPrompts}
           onBack={() => setScreen("topics")}
@@ -91,17 +96,15 @@ export function ReportFlow() {
 
       {screen === "report" && (
         <ReportView
-          onOpenDefs={openDefs}
+          tab={tab}
           onPilotClick={() => setModal("pilot")}
           onUpgradeClick={() => setModal("upgrade")}
         />
       )}
 
-      <DefinitionsPanel open={defsOpen} anchor={defsAnchor} onClose={() => setDefsOpen(false)} />
-
       {modal === "pilot" && (
         <TalkToSalesModal
-          title="Request a 45-day pilot"
+          title="Request a free 45-day pilot"
           body="Sales-assisted in v1 — this captures your request and routes it to the CommerceIQ team. No self-serve pilot start yet."
           onClose={() => setModal(null)}
         />
@@ -112,12 +115,6 @@ export function ReportFlow() {
           body="No self-serve payment in v1 — every upgrade CTA routes here. Sales raises your account caps once approved."
           onClose={() => setModal(null)}
         />
-      )}
-
-      {toast && (
-        <div className="fixed bottom-6 right-6 z-[80] rounded-full border border-white/10 bg-[#120B1E] px-4 py-2 text-sm text-[var(--plg-ink)] shadow-lg">
-          {toast} ✓
-        </div>
       )}
     </div>
   );

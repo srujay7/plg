@@ -56,7 +56,7 @@ export function TeardownTab() {
     <div className="mx-auto max-w-[1120px] px-7 py-12">
       <div className="max-w-[64ch]">
         <div className="text-xs font-semibold uppercase tracking-[.14em] text-[var(--plg-accent)]">
-          PLG-04 &middot; 1 ASIN on Basic
+          1 ASIN on Basic
         </div>
         <h2 className="mt-2 text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
           SKU teardown — content-health scores + advisory rewrite
@@ -118,7 +118,7 @@ export function TeardownTab() {
             <div className="text-[12.5px] font-semibold text-[#FFB08C]">Revenue at risk</div>
             <InfoTip>
               <b>How it&rsquo;s calculated:</b> Same AI Visibility/Rank gap × query volume (SQP) ×
-              conversion × AOV model as the brand-level estimate above (PLG-05), scoped to Alexa
+              conversion × AOV model as the brand-level estimate above, scoped to Alexa
               AI (AEO/chatbot) traffic on this ASIN&rsquo;s 2 weakest topics — not overall revenue.
               Directional, not measured.
             </InfoTip>

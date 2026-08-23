@@ -1,8 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { PROMPTS, STACKUP, META } from "@/data/plgReportData";
-import { pct, rnk, topicsFromPrompts, nameList, type TopicAggregate } from "@/lib/plg";
+import { PROMPTS, META, BRAND_RISK } from "@/data/plgReportData";
+import {
+  pct,
+  rnk,
+  topicsFromPrompts,
+  nameList,
+  fmtMoneyShort,
+  distributeRisk,
+  type TopicAggregate,
+} from "@/lib/plg";
 
 type SortKey = "label" | "vis" | "sov" | "rank";
 
@@ -13,7 +21,8 @@ export function TopicTab() {
   const [sortDir, setSortDir] = useState<1 | -1>(-1);
 
   const topics = topicsFromPrompts(PROMPTS);
-  const maxSov = Math.max(...topics.map((t) => t.sov));
+  const risks = distributeRisk(topics, (t) => 100 - t.sov, BRAND_RISK);
+  const riskByLabel = new Map(topics.map((t, i) => [t.label, risks[i]]));
 
   const rows = [...topics].sort((a, b) => {
     const va = a[sortKey];
@@ -63,27 +72,23 @@ export function TopicTab() {
   return (
     <div className="mx-auto max-w-[1120px] px-7 py-12">
       <div className="max-w-[64ch]">
-        <div className="text-xs font-semibold uppercase tracking-[.14em] text-[var(--plg-accent)]">
-          By topic
-        </div>
-        <h2 className="mt-2 text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
+        <h2 className="text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
           Where the brand is strong, and where there&rsquo;s room to climb
         </h2>
         <p className="mt-3 text-base text-[var(--plg-text2)]">
-          Each topic groups the shopper questions that share an intent. Visibility shows breadth
-          of presence; weighted share of voice shows how much of the answer the brand actually
-          owns. Click a column heading to sort.
+          Each topic groups the shopper questions that share an intent — the same three
+          headline metrics as the Brand tab, broken out per topic. Click a column heading to
+          sort.
         </p>
       </div>
 
       <div className="mt-5.5 overflow-hidden rounded-2xl border border-white/10 backdrop-blur-xl">
-        <div className="grid grid-cols-1 gap-4.5 bg-white/[0.035] px-5.5 py-3.5 md:grid-cols-[1.4fr_2.2fr_1fr_1fr]">
+        <div className="grid grid-cols-1 gap-4.5 bg-white/[0.035] px-5.5 py-3.5 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           {(
             [
               ["label", "Topic"],
-              ["vis", "Visibility · share of voice"],
-              ["sov", "Weighted SOV"],
-              ["rank", "Best position"],
+              ["vis", "AI Visibility"],
+              ["rank", "AI Rank"],
             ] as [SortKey, string][]
           ).map(([key, label]) => (
             <button
@@ -95,63 +100,47 @@ export function TopicTab() {
               {arrow(key)}
             </button>
           ))}
+          <div className="text-left text-[11.5px] font-semibold uppercase tracking-[.08em] text-[var(--plg-muted)]">
+            Revenue at Risk
+          </div>
         </div>
         {rows.map((t) => {
-          const sovW = maxSov > 0 ? (t.sov / maxSov) * 100 : 0;
+          const risk = riskByLabel.get(t.label);
           return (
             <div
               key={t.label}
-              className="grid grid-cols-1 gap-4.5 border-t border-white/10 px-5.5 py-4.5 md:grid-cols-[1.4fr_2.2fr_1fr_1fr] md:items-center"
+              className="grid grid-cols-1 gap-4.5 border-t border-white/10 px-5.5 py-4.5 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:items-center"
             >
               <div className="text-[15px] font-semibold text-[var(--plg-ink)]">{t.label}</div>
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-6 flex-none text-[10.5px] uppercase tracking-[.06em] text-[var(--plg-muted)]">
-                    Vis
-                  </span>
-                  <span className="h-3 flex-1 overflow-hidden rounded-md bg-white/[0.09]">
-                    <span
-                      className="block h-full rounded-md bg-gradient-to-r from-[var(--plg-secondary)] to-[var(--plg-indigo)] transition-all duration-700"
-                      style={{ width: `${t.vis}%` }}
-                    />
-                  </span>
-                  <span className="w-[52px] flex-none text-right font-mono text-[12.5px] text-[var(--plg-ink)]">
-                    {pct(t.vis)}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <span className="w-6 flex-none text-[10.5px] uppercase tracking-[.06em] text-[var(--plg-muted)]">
-                    SOV
-                  </span>
-                  <span className="h-3 flex-1 overflow-hidden rounded-md bg-white/[0.09]">
-                    <span
-                      className="block h-full rounded-md bg-gradient-to-r from-[var(--plg-indigo)] to-[var(--plg-accent)] transition-all duration-700"
-                      style={{ width: `${sovW}%` }}
-                    />
-                  </span>
-                  <span className="w-[52px] flex-none text-right font-mono text-[12.5px] text-[var(--plg-ink)]">
-                    {pct(t.sov)}
-                  </span>
-                </div>
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-10 flex-none overflow-hidden rounded-md bg-white/[0.09]">
+                  <span
+                    className="block h-full rounded-md bg-gradient-to-r from-[var(--plg-secondary)] to-[var(--plg-indigo)] transition-all duration-700"
+                    style={{ width: `${t.vis}%` }}
+                  />
+                </span>
+                <span className="flex-none text-right font-mono text-[12.5px] text-[var(--plg-ink)]">
+                  {pct(t.vis)}
+                </span>
               </div>
-              <div className="text-right md:text-right">
-                <div className="font-mono text-[22px] font-medium text-[var(--plg-ink)]">
-                  {t.sov.toFixed(1)}
-                  <span className="text-[13px]">%</span>
-                </div>
-                <div className="text-[11px] text-[var(--plg-muted)]">of {META.assistant} attention</div>
+              <div className="text-left">
+                <span className="font-mono text-[20px] font-medium text-[var(--plg-ink)]">
+                  {t.rank == null ? "—" : t.rank.toFixed(1)}
+                </span>
               </div>
-              <div className="text-right md:text-right">
-                <span className="font-mono text-[20px] font-medium text-[var(--plg-ink)]">{rnk(t.rank)}</span>
-                <div className="text-[11px] text-[var(--plg-muted)]">avg &middot; lower better</div>
+              <div className="text-left">
+                <span className="font-mono text-[15px] font-semibold text-[#FF8A65]">
+                  {risk ? `${fmtMoneyShort(risk.low)}–${fmtMoneyShort(risk.high)}` : "—"}
+                </span>
               </div>
             </div>
           );
         })}
       </div>
       <p className="mt-3.5 text-[12.5px] text-[var(--plg-muted)]">
-        Share-of-voice bars are scaled to the highest topic value for easy comparison; the
-        number beside each bar is the true percentage.
+        AI Rank simplifies weighted share of voice and best position into one number, same as
+        the Brand tab. Revenue at Risk is directional, apportioned across topics by where the
+        brand&rsquo;s share of voice is weakest.
       </p>
 
       <div className="mt-6.5 grid grid-cols-1 gap-5.5 md:grid-cols-2">
@@ -193,56 +182,6 @@ export function TopicTab() {
             {takeaway}
           </div>
         </div>
-      </div>
-
-      <div className="mt-11">
-        <div className="text-xs font-semibold uppercase tracking-[.14em] text-[var(--plg-accent)]">
-          PLG-06 &middot; Competitive stack-up
-        </div>
-        <h3 className="mt-2 text-[19px] font-semibold text-[var(--plg-ink)]">
-          Head-to-head on the topics that matter most
-        </h3>
-        <p className="mt-2 max-w-[70ch] text-[14.5px] text-[var(--plg-text2)]">
-          Named competitors differ by topic. Your brand is highlighted so you can see exactly
-          which prompts you win and lose.
-        </p>
-      </div>
-      <div className="mt-4">
-        {STACKUP.map((t) => {
-          const max = Math.max(...t.rows.map((r) => r[1]));
-          return (
-            <div key={t.topic} className="mb-6.5 last:mb-0">
-              <h4 className="text-[14.5px] font-bold text-[var(--plg-ink)]">{t.topic}</h4>
-              <div className="mt-1 text-[12.5px] text-[var(--plg-muted)]">{t.loseNote}</div>
-              {t.rows.map(([name, score, isBrand]) => (
-                <div key={name} className="mt-3 flex items-center gap-3">
-                  <div
-                    className={`w-[150px] flex-none text-[13px] ${
-                      isBrand ? "font-bold text-[var(--plg-ink)]" : "text-[var(--plg-text2)]"
-                    }`}
-                  >
-                    {name}
-                  </div>
-                  <div className="h-3.5 flex-1 overflow-hidden rounded-md bg-white/[0.09]">
-                    <div
-                      className={`h-full rounded-md transition-all duration-700 ${
-                        isBrand ? "bg-gradient-to-r from-[var(--plg-indigo)] to-[var(--plg-accent)]" : "bg-[var(--plg-gap)]"
-                      }`}
-                      style={{ width: `${(score / max) * 100}%` }}
-                    />
-                  </div>
-                  <div
-                    className={`w-[34px] text-right font-mono text-[12.5px] ${
-                      isBrand ? "font-semibold text-[var(--plg-indigo)]" : "text-[var(--plg-muted)]"
-                    }`}
-                  >
-                    {score}
-                  </div>
-                </div>
-              ))}
-            </div>
-          );
-        })}
       </div>
     </div>
   );

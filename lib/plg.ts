@@ -41,6 +41,27 @@ export const rnk = (v: number | null | undefined) =>
 export const nameList = (a: string[]) =>
   a.length <= 1 ? a[0] || "" : a.slice(0, -1).join(", ") + " and " + a.slice(-1);
 
+export const fmtMoneyShort = (v: number) =>
+  v >= 1_000_000 ? `$${(v / 1_000_000).toFixed(1)}M` : `$${(v / 1000).toFixed(0)}K`;
+
+/**
+ * Distributes a brand-level revenue-at-risk range across a list of items (topics or
+ * prompts), weighted toward the weakest performers — directional, same figure just
+ * apportioned. Used by the Topic and Prompt tabs to derive a per-row estimate.
+ */
+export function distributeRisk<T>(
+  items: T[],
+  weightOf: (item: T) => number,
+  total: { low: number; high: number }
+): { low: number; high: number }[] {
+  const weights = items.map((item) => Math.max(1, weightOf(item)));
+  const totalWeight = weights.reduce((s, w) => s + w, 0);
+  return weights.map((w) => ({
+    low: (total.low * w) / totalWeight,
+    high: (total.high * w) / totalWeight,
+  }));
+}
+
 export const fmtDate = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("en-US", {
     month: "long",

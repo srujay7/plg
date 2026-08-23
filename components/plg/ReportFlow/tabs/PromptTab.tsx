@@ -1,19 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { PROMPTS, META, type PromptRow } from "@/data/plgReportData";
-import { pct, num1, rnk } from "@/lib/plg";
+import { PROMPTS, META, BRAND_RISK, type PromptRow } from "@/data/plgReportData";
+import { pct, rnk, fmtMoneyShort, distributeRisk } from "@/lib/plg";
 
-type SortKey = "q" | "topic" | "vis" | "sov" | "rank";
+type SortKey = "q" | "topic" | "vis" | "rank" | "risk";
 
 // "By prompt" tab: sortable/filterable prompt table + gap/low/win callout cards.
 // Ported from renderPrompts() + the prompt-insights IIFE.
 export function PromptTab() {
-  const [sortKey, setSortKey] = useState<SortKey>("sov");
+  // Defaults to descending revenue-at-risk, which — since risk is weighted toward the
+  // weakest share of voice — naturally surfaces gaps (0% visibility) at the top.
+  const [sortKey, setSortKey] = useState<SortKey>("risk");
   const [sortDir, setSortDir] = useState<1 | -1>(-1);
   const [gapsOnly, setGapsOnly] = useState(false);
 
-  const maxSov = Math.max(...PROMPTS.map((p) => p.sov || 0));
+  const risks = distributeRisk(PROMPTS, (p) => 100 - (p.sov || 0), BRAND_RISK);
+  const riskByQ = new Map(PROMPTS.map((p, i) => [p.q, risks[i]]));
+
   let rows = gapsOnly ? PROMPTS.filter((p) => p.vis === 0) : PROMPTS.slice();
   rows = rows.sort((a, b) => {
     if (sortKey === "q" || sortKey === "topic") {
@@ -22,6 +26,11 @@ export function PromptTab() {
     if (sortKey === "rank") {
       const va = a.rank ?? 999;
       const vb = b.rank ?? 999;
+      return (va - vb) * sortDir;
+    }
+    if (sortKey === "risk") {
+      const va = riskByQ.get(a.q)?.high ?? 0;
+      const vb = riskByQ.get(b.q)?.high ?? 0;
       return (va - vb) * sortDir;
     }
     const va = a[sortKey] ?? -1;
@@ -51,10 +60,7 @@ export function PromptTab() {
   return (
     <div className="mx-auto max-w-[1120px] px-7 py-12">
       <div className="max-w-[64ch]">
-        <div className="text-xs font-semibold uppercase tracking-[.14em] text-[var(--plg-accent)]">
-          By prompt
-        </div>
-        <h2 className="mt-2 text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
+        <h2 className="text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
           Every question {META.assistant} was asked
         </h2>
         <p className="mt-3 text-base text-[var(--plg-text2)]">
@@ -82,24 +88,29 @@ export function PromptTab() {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="mt-3.5 w-full min-w-[640px] border-collapse text-[14.5px]">
+        <table className="mt-3.5 w-full min-w-[720px] border-collapse text-[14.5px]">
+          <colgroup>
+            <col />
+            <col className="w-[130px]" />
+            <col className="w-[130px]" />
+            <col className="w-[90px]" />
+            <col className="w-[120px]" />
+          </colgroup>
           <thead>
             <tr>
               {(
                 [
                   ["q", "Shopper question"],
                   ["topic", "Topic"],
-                  ["vis", "Visibility"],
-                  ["sov", "Weighted SOV"],
-                  ["rank", "Best position"],
+                  ["vis", "AI Visibility"],
+                  ["rank", "AI Rank"],
+                  ["risk", "Revenue at Risk"],
                 ] as [SortKey, string][]
               ).map(([key, label]) => (
                 <th
                   key={key}
                   onClick={() => onSort(key)}
-                  className={`cursor-pointer select-none whitespace-nowrap border-b border-white/10 px-3.5 py-3 text-left text-[11.5px] font-semibold uppercase tracking-[.07em] text-[var(--plg-muted)] ${
-                    key === "vis" || key === "sov" || key === "rank" ? "text-right" : ""
-                  }`}
+                  className="cursor-pointer select-none whitespace-nowrap border-b border-white/10 px-3.5 py-3 text-left text-[11.5px] font-semibold uppercase tracking-[.07em] text-[var(--plg-muted)]"
                 >
                   {label} <span className="text-[10px] text-[var(--plg-accent)]">{arrow(key)}</span>
                 </th>
@@ -109,6 +120,7 @@ export function PromptTab() {
           <tbody>
             {rows.map((p) => {
               const gap = p.vis === 0;
+              const risk = riskByQ.get(p.q);
               return (
                 <tr key={p.q} className="border-b border-white/10 hover:bg-white/[0.035]">
                   <td className={`max-w-[520px] px-3.5 py-3.5 ${gap ? "text-[var(--plg-muted)]" : "text-[var(--plg-ink)]"}`}>
@@ -118,30 +130,30 @@ export function PromptTab() {
                         gap
                       </span>
                     )}
-                    {!gap && (
-                      <div className="mt-1.5 h-[5px] max-w-[340px] overflow-hidden rounded-[3px] bg-white/[0.09]">
-                        <div
-                          className="h-full rounded-[3px] bg-gradient-to-r from-[var(--plg-indigo)] to-[var(--plg-accent)]"
-                          style={{ width: `${maxSov > 0 ? (p.sov / maxSov) * 100 : 0}%` }}
-                        />
-                      </div>
-                    )}
                   </td>
                   <td className="whitespace-nowrap px-3.5 py-3.5 text-[12.5px] text-[var(--plg-muted)]">{p.topic}</td>
-                  <td className="whitespace-nowrap px-3.5 py-3.5 text-right font-mono text-[13.5px] text-[var(--plg-body)]">
-                    {pct(p.vis)}
+                  <td className="whitespace-nowrap px-3.5 py-3.5">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-10 flex-none overflow-hidden rounded-md bg-white/[0.09]">
+                        <span
+                          className="block h-full rounded-md bg-gradient-to-r from-[var(--plg-secondary)] to-[var(--plg-indigo)]"
+                          style={{ width: `${p.vis}%` }}
+                        />
+                      </span>
+                      <span className="font-mono text-[12.5px] text-[var(--plg-ink)]">{pct(p.vis)}</span>
+                    </div>
                   </td>
-                  <td className="whitespace-nowrap px-3.5 py-3.5 text-right font-mono text-[13.5px] text-[var(--plg-body)]">
-                    {pct(p.sov)}
-                  </td>
-                  <td className="whitespace-nowrap px-3.5 py-3.5 text-right font-mono text-[13.5px]">
+                  <td className="whitespace-nowrap px-3.5 py-3.5 font-mono text-[13.5px]">
                     {gap ? (
                       <span className="text-[var(--plg-gap)]">—</span>
                     ) : (
                       <span className={p.rank === 1 ? "font-semibold text-[var(--plg-indigo)]" : "text-[var(--plg-body)]"}>
-                        {num1(p.rank)}
+                        {p.rank == null ? "—" : p.rank.toFixed(1)}
                       </span>
                     )}
+                  </td>
+                  <td className="whitespace-nowrap px-3.5 py-3.5 font-mono text-[13px] font-semibold text-[#FF8A65]">
+                    {risk ? `${fmtMoneyShort(risk.low)}–${fmtMoneyShort(risk.high)}` : "—"}
                   </td>
                 </tr>
               );

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { PrimaryButton } from "@/components/plg/shared/Buttons";
+import { CurationMasthead } from "@/components/plg/ReportFlow/CurationMasthead";
 import type { CuratedPrompt } from "@/lib/plg";
 
 const PROMPT_CAP_PER_TOPIC = 25;
@@ -37,11 +38,13 @@ function SourceBadge({ prompt }: { prompt: CuratedPrompt }) {
 // keep/drop, inline edit, add-your-own (no topic required), capped ≤25/topic. Optional /
 // skippable — "start audit" accepts the smart defaults. Ported from renderPromptsScreen().
 export function PromptsScreen({
+  brand,
   prompts,
   onChangePrompts,
   onBack,
   onGenerate,
 }: {
+  brand: string;
   prompts: CuratedPrompt[];
   onChangePrompts: (next: CuratedPrompt[]) => void;
   onBack: () => void;
@@ -93,7 +96,9 @@ export function PromptsScreen({
   }
 
   return (
-    <div className="flex justify-center px-6 py-14">
+    <div>
+      <CurationMasthead brand={brand} />
+      <div className="flex justify-center px-6 py-8">
       <div className="w-full max-w-[860px] rounded-2xl border border-white/10 bg-white/[0.045] p-11 shadow-[0_30px_80px_rgba(0,0,0,.6)] backdrop-blur-xl">
         <button
           onClick={onBack}
@@ -242,6 +247,7 @@ export function PromptsScreen({
         <PrimaryButton className="mt-4.5 w-full !py-3" onClick={onGenerate}>
           Generate my report
         </PrimaryButton>
+      </div>
       </div>
     </div>
   );
