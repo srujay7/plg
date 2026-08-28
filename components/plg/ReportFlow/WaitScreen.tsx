@@ -11,7 +11,7 @@ const STEPS = [
   "Scoring AI Visibility & AI Rank on Alexa AI",
   "Running competitive stack-up",
   "Tearing down your SKU (SEO + AEO readiness)",
-  "Calculating revenue at risk & assembling report",
+  "Assembling your report",
 ];
 
 export function WaitScreen({ onDone }: { onDone: () => void }) {
@@ -31,7 +31,7 @@ export function WaitScreen({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="flex justify-center px-6 py-20">
-      <div className="w-[520px] max-w-full rounded-2xl border border-white/10 bg-white/[0.045] p-11 text-center shadow-[0_30px_80px_rgba(0,0,0,.6)] backdrop-blur-xl">
+      <div className="w-[520px] max-w-full rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-11 text-center shadow-[0_1px_2px_rgba(33,2,53,.04)]">
         <div className="plg-spinner mx-auto mb-5.5" />
         <h1 className="text-[21px] font-semibold text-[var(--plg-ink)]">
           Generating your AI Visibility audit
@@ -40,7 +40,7 @@ export function WaitScreen({ onDone }: { onDone: () => void }) {
           This can take up to <b className="text-[var(--plg-ink)]">10&ndash;15 minutes</b>.
           We&rsquo;ll email you when it&rsquo;s ready — or check back here.
         </p>
-        <div className="mb-2 h-2 overflow-hidden rounded-full bg-white/[0.09]">
+        <div className="mb-2 h-2 overflow-hidden rounded-full bg-[var(--plg-surface-2)]">
           <div
             className="h-full rounded-full bg-gradient-to-r from-[var(--plg-indigo)] to-[var(--plg-accent)] transition-all duration-700"
             style={{ width: `${pct}%` }}
@@ -85,7 +85,7 @@ export function WaitScreen({ onDone }: { onDone: () => void }) {
             );
           })}
         </div>
-        <div className="border-t border-white/10 pt-4.5 text-xs text-[var(--plg-muted)]">
+        <div className="border-t border-[var(--plg-hair)] pt-4.5 text-xs text-[var(--plg-muted)]">
           Feel free to close this tab — nothing is lost. Your report will be waiting at its
           permanent link.
         </div>

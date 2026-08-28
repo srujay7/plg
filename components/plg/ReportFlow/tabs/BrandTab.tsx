@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { PROMPTS, LEADERBOARD, META, BRAND_RISK } from "@/data/plgReportData";
-import { aggregate, fmtMoneyShort } from "@/lib/plg";
+import { PROMPTS, LEADERBOARD, META } from "@/data/plgReportData";
+import { aggregate } from "@/lib/plg";
 
 function InfoDot({ anchor }: { anchor: string }) {
   return (
     <Link
       href={`/plg/academy#${anchor}`}
       title="How this is calculated"
-      className="flex h-[18px] w-[18px] flex-none items-center justify-center rounded-full border border-white/10 text-[10px] font-bold italic text-[var(--plg-muted)] hover:border-[var(--plg-secondary)] hover:text-[var(--plg-secondary)]"
+      className="flex h-[18px] w-[18px] flex-none items-center justify-center rounded-full border border-[var(--plg-hair)] text-[10px] font-bold italic text-[var(--plg-muted)] hover:border-[var(--plg-secondary)] hover:text-[var(--plg-secondary)]"
     >
       i
     </Link>
@@ -63,7 +63,7 @@ export function BrandTab() {
       </div>
 
       <h3 className="mt-8 text-[19px] font-semibold text-[var(--plg-ink)]">Brand Visibility Breakdown</h3>
-      <div className="mt-4 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-3">
+      <div className="mt-4 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-hair)] md:grid-cols-2">
         <div className="bg-[var(--plg-bg)] p-6">
           <div className="flex items-center justify-between gap-2">
             <div className="text-[12.5px] font-semibold text-[var(--plg-muted)]">Brand visibility</div>
@@ -80,7 +80,7 @@ export function BrandTab() {
             </b>{" "}
             tracked shopper questions.
           </div>
-          <div className="mt-4 h-1.5 overflow-hidden rounded-[3px] bg-white/[0.09]">
+          <div className="mt-4 h-1.5 overflow-hidden rounded-[3px] bg-[var(--plg-surface-2)]">
             <div
               className="h-full rounded-[3px] bg-gradient-to-r from-[var(--plg-indigo)] to-[var(--plg-accent)] transition-all duration-1000"
               style={{ width: `${brand.vis}%` }}
@@ -116,24 +116,6 @@ export function BrandTab() {
             ))}
           </div>
         </div>
-        <div className="bg-[var(--plg-bg)] p-6">
-          <div className="flex items-center justify-between gap-2">
-            <div className="text-[12.5px] font-semibold text-[#FFB08C]">Revenue at Risk</div>
-          </div>
-          <div className="mt-3 text-[36px] font-bold leading-none tracking-tight text-[#FF8A65]">
-            {fmtMoneyShort(BRAND_RISK.low)}–{fmtMoneyShort(BRAND_RISK.high)}
-          </div>
-          <div className="mt-3 text-[13px] text-[var(--plg-text2)]">
-            Estimated annualized revenue {META.brand} may be losing on {META.assistant}{" "}
-            (AEO/chatbot) traffic across your selected topics. Directional, not measured.
-          </div>
-          <div className="mt-4 h-1.5 overflow-hidden rounded-[3px] bg-white/[0.09]">
-            <div
-              className="h-full rounded-[3px] bg-gradient-to-r from-[#FFA36B] to-[#FF5C4D]"
-              style={{ width: "78%" }}
-            />
-          </div>
-        </div>
       </div>
 
       <h3 className="mt-11 text-[19px] font-semibold text-[var(--plg-ink)]">Alexa AI top 10</h3>
@@ -141,68 +123,81 @@ export function BrandTab() {
         Top 10 brands on {META.assistant} across your selected topics, ranked by AI-shelf score —
         computed from the same {META.assistant} reads used above, no extra scrape.
       </p>
-      <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 backdrop-blur-xl">
+      <div className="mt-4 flex flex-col gap-2">
         {LEADERBOARD.map(([name, score], i) => {
           const isYou = i === youIdx;
           return (
             <div
               key={name}
-              className={`flex items-center gap-3.5 border-t border-white/10 px-4.5 py-2.5 first:border-t-0 ${
-                isYou ? "bg-[rgba(90,175,254,.10)]" : ""
-              }`}
+              className={
+                isYou
+                  ? "flex items-center gap-3.5 rounded-lg border-[1.5px] border-[var(--plg-accent)] bg-[rgba(194,49,255,.05)] px-4.5 py-3 shadow-[0_1px_2px_rgba(33,2,53,.04)]"
+                  : "flex items-center gap-3.5 rounded-lg border border-[var(--plg-hair)] px-4.5 py-3"
+              }
             >
-              <div className={`w-7 font-mono text-[13px] ${isYou ? "font-semibold text-[var(--plg-indigo)]" : "text-[var(--plg-muted)]"}`}>
-                #{i + 1}
+              <div
+                className={`flex h-8 w-8 flex-none items-center justify-center rounded-full text-[13px] font-semibold ${
+                  isYou ? "bg-[var(--plg-accent)] text-white" : "bg-[var(--plg-surface-2)] text-[var(--plg-muted)]"
+                }`}
+              >
+                {name.charAt(0)}
               </div>
-              <div className="flex w-[170px] flex-none items-center gap-1.5 text-sm font-semibold text-[var(--plg-ink)]">
+              <div className="w-[170px] flex-none text-sm font-semibold text-[var(--plg-ink)]">
                 {name}
                 {isYou && (
-                  <span className="rounded-full bg-[var(--plg-indigo-btn)] px-2 py-0.5 text-[9.5px] font-bold tracking-[.04em] text-white">
-                    YOU
-                  </span>
+                  <span className="ml-1.5 text-[11px] font-normal text-[var(--plg-muted)]">(you)</span>
                 )}
               </div>
-              <div className="h-2.5 flex-1 overflow-hidden rounded-[5px] bg-white/[0.09]">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[var(--plg-surface-2)]">
                 <div
-                  className={`h-full rounded-[5px] transition-all duration-700 ${
-                    isYou ? "bg-gradient-to-r from-[var(--plg-indigo)] to-[var(--plg-accent)]" : "bg-[var(--plg-gap)]"
+                  className={`h-full rounded-full transition-all duration-700 ${
+                    isYou ? "bg-[var(--plg-accent)]" : "bg-[var(--plg-gap)]"
                   }`}
                   style={{ width: `${(score / maxScore) * 100}%` }}
                 />
               </div>
-              <div className={`w-[42px] flex-none text-right font-mono text-[12.5px] ${isYou ? "font-semibold text-[var(--plg-indigo)]" : "text-[var(--plg-muted)]"}`}>
+              <div className="w-[42px] flex-none text-right font-mono text-[12.5px] text-[var(--plg-muted)]">
                 {score}
               </div>
+              <span
+                className={`flex-none rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                  isYou
+                    ? "bg-[rgba(194,49,255,.14)] text-[var(--plg-accent)]"
+                    : "bg-[var(--plg-surface)] text-[var(--plg-muted)]"
+                }`}
+              >
+                #{i + 1}
+              </span>
             </div>
           );
         })}
         {youIdx === -1 && (
-          <div className="m-4.5 rounded-[10px] border border-[rgba(138,141,255,.32)] bg-[rgba(138,141,255,.12)] p-3.5 text-[13px] text-[var(--plg-indigo)]">
+          <div className="rounded-lg border border-[rgba(138,141,255,.32)] bg-[rgba(138,141,255,.08)] p-3.5 text-[13px] text-[var(--plg-indigo)]">
             <b>{META.brand} is not in the top 10</b> for your selected topics.
           </div>
         )}
       </div>
 
-      <div className="mt-5.5 rounded-2xl border border-white/10 bg-white/[0.045] p-6 backdrop-blur-xl">
+      <div className="mt-5.5 rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-6">
         <h3 className="text-base font-semibold text-[var(--plg-ink)]">How to read the brand numbers</h3>
         <ul className="mt-3.5 list-none p-0">
           <li className="flex gap-3 py-3 text-[14.5px] text-[var(--plg-text2)]">
-            <span className="mt-1.5 h-2 w-2 flex-none rounded-[3px]" style={{ background: "var(--plg-indigo)" }} />
+            <span className="mt-1.5 h-2 w-2 flex-none rounded-full" style={{ background: "var(--plg-indigo)" }} />
             <span>
               <b className="text-[var(--plg-ink)]">Broad presence.</b> {META.brand} appears in{" "}
               {shown} of {total} tracked questions, so {META.assistant} surfaces it for {visX}{" "}
               {META.category} needs shoppers describe.
             </span>
           </li>
-          <li className="flex gap-3 border-t border-white/10 py-3 text-[14.5px] text-[var(--plg-text2)]">
-            <span className="mt-1.5 h-2 w-2 flex-none rounded-[3px]" style={{ background: "var(--plg-accent)" }} />
+          <li className="flex gap-3 border-t border-[var(--plg-hair)] py-3 text-[14.5px] text-[var(--plg-text2)]">
+            <span className="mt-1.5 h-2 w-2 flex-none rounded-full" style={{ background: "var(--plg-accent)" }} />
             <span>
               <b className="text-[var(--plg-ink)]">{shareLab} share.</b> A {brand.sov.toFixed(1)}%
               weighted share means that when {META.assistant} answers, {META.brand} is {shareD}.
             </span>
           </li>
-          <li className="flex gap-3 border-t border-white/10 py-3 text-[14.5px] text-[var(--plg-text2)]">
-            <span className="mt-1.5 h-2 w-2 flex-none rounded-[3px]" style={{ background: "var(--plg-secondary)" }} />
+          <li className="flex gap-3 border-t border-[var(--plg-hair)] py-3 text-[14.5px] text-[var(--plg-text2)]">
+            <span className="mt-1.5 h-2 w-2 flex-none rounded-full" style={{ background: "var(--plg-secondary)" }} />
             <span>
               <b className="text-[var(--plg-ink)]">{posLab} placement.</b> An average best
               position of {brand.rank?.toFixed(2)} means {META.brand} tends to land {posD}.

@@ -15,9 +15,9 @@ export const metadata: Metadata = {
     "See your brand's AI-shelf visibility on Alexa AI, get a dollar-anchored business case, and start a free Content Agent pilot.",
 };
 
-// This layout intentionally overrides the root layout's light theme + Manrope font for
-// everything under (plg) — the AEO PLG product is a separate, dark-themed product surface
-// and does not use the marketing site's SiteHeader/SiteFooter.
+// This layout intentionally overrides the root layout's Manrope font (and its own light
+// theme tokens live in ./plg.css) for everything under (plg) — the AEO PLG product is a
+// separate product surface and does not use the marketing site's SiteHeader/SiteFooter.
 export default function PlgLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`plg-root ${dmSans.variable}`}>

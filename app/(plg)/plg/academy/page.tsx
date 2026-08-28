@@ -98,7 +98,7 @@ export default async function AcademyPage({
         {STEPS.map((s) => (
           <div
             key={s.n}
-            className="flex gap-4 rounded-2xl border border-white/10 bg-white/[0.045] p-5 backdrop-blur-xl"
+            className="flex gap-4 rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-5"
           >
             <div className="font-mono text-xs font-medium text-[var(--plg-accent)]">{s.n}</div>
             <div>
@@ -120,12 +120,12 @@ export default async function AcademyPage({
           <div
             key={d.id}
             id={d.id}
-            className="scroll-mt-24 rounded-2xl border border-white/10 bg-white/[0.045] p-5 backdrop-blur-xl"
+            className="scroll-mt-24 rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-5"
           >
             <div className="font-mono text-xs font-medium text-[var(--plg-accent)]">{d.n}</div>
             <h3 className="mt-2 text-base font-semibold text-[var(--plg-ink)]">{d.title}</h3>
             <p className="mt-2 text-[13.5px] text-[var(--plg-text2)]">{d.body}</p>
-            <div className="mt-3 rounded-lg border border-white/10 bg-white/[0.035] px-2.5 py-2 font-mono text-xs text-[var(--plg-indigo)]">
+            <div className="mt-3 rounded-lg border border-[var(--plg-hair)] bg-[var(--plg-surface)] px-2.5 py-2 font-mono text-xs text-[var(--plg-indigo)]">
               {d.formula}
             </div>
           </div>

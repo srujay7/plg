@@ -138,8 +138,8 @@ export function SignupFlow() {
                   onBlur={handleEmailBlur}
                   placeholder="jane@acme.com"
                   className={cn(
-                    "w-full rounded-[6px] border-[1.5px] bg-white/[0.03] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none transition focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]",
-                    isBlocked ? "border-[var(--plg-error)] bg-[rgba(255,90,80,.10)]" : "border-white/15"
+                    "w-full rounded-[6px] border-[1.5px] bg-[var(--plg-surface)] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none transition focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]",
+                    isBlocked ? "border-[var(--plg-error)] bg-[rgba(255,90,80,.10)]" : "border-[var(--plg-hair)]"
                   )}
                 />
                 {isBlocked && (
@@ -200,7 +200,7 @@ export function SignupFlow() {
                     maxLength={1}
                     value={d}
                     onChange={(e) => handleOtpChange(i, e.target.value)}
-                    className="h-[54px] w-[46px] rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] text-center text-xl font-bold text-[var(--plg-ink)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
+                    className="h-[54px] w-[46px] rounded-[6px] border-[1.5px] border-[var(--plg-hair)] bg-[var(--plg-surface)] text-center text-xl font-bold text-[var(--plg-ink)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
                   />
                 ))}
               </div>
@@ -240,7 +240,7 @@ export function SignupFlow() {
                 <select
                   value={retailer}
                   onChange={(e) => setRetailer(e.target.value)}
-                  className="w-full rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
+                  className="w-full rounded-[6px] border-[1.5px] border-[var(--plg-hair)] bg-[var(--plg-surface)] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
                 >
                   {RETAILER_OPTIONS.map((r) => (
                     <option key={r.value} value={r.value} disabled={!r.enabled}>
@@ -262,7 +262,7 @@ export function SignupFlow() {
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                   placeholder="e.g. Purina"
-                  className="w-full rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
+                  className="w-full rounded-[6px] border-[1.5px] border-[var(--plg-hair)] bg-[var(--plg-surface)] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
                 />
               </div>
               <div className="mb-4.5">
@@ -274,7 +274,7 @@ export function SignupFlow() {
                   value={asin}
                   onChange={(e) => setAsin(e.target.value)}
                   placeholder="https://www.amazon.com/dp/B0XXXXXXX"
-                  className="w-full rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
+                  className="w-full rounded-[6px] border-[1.5px] border-[var(--plg-hair)] bg-[var(--plg-surface)] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
                 />
                 <div className="mt-1.5 text-xs leading-relaxed text-[var(--plg-muted)]">
                   A SKU that belongs to your brand on Amazon — we&rsquo;ll provide AEO-ready
@@ -290,7 +290,7 @@ export function SignupFlow() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="e.g. We sell premium dry and wet dog food, including grain-free and senior formulas, across 40+ SKUs."
-                  className="min-h-[76px] w-full resize-y rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] px-3.5 py-2.5 text-sm leading-relaxed text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
+                  className="min-h-[76px] w-full resize-y rounded-[6px] border-[1.5px] border-[var(--plg-hair)] bg-[var(--plg-surface)] px-3.5 py-2.5 text-sm leading-relaxed text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
                 />
               </div>
               <PrimaryButton

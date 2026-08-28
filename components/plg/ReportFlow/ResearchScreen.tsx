@@ -30,7 +30,7 @@ export function ResearchScreen({ brand, onDone }: { brand: string; onDone: () =>
 
   return (
     <div className="flex justify-center px-6 py-20">
-      <div className="w-[480px] max-w-full rounded-2xl border border-white/10 bg-white/[0.045] p-11 text-center shadow-[0_30px_80px_rgba(0,0,0,.6)] backdrop-blur-xl">
+      <div className="w-[480px] max-w-full rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-11 text-center shadow-[0_1px_2px_rgba(33,2,53,.04)]">
         <div className="plg-spinner mx-auto mb-5.5" />
         <h1 className="text-[21px] font-semibold text-[var(--plg-ink)]">Researching {brand}</h1>
         <p className="mx-auto mb-6.5 mt-2.5 text-sm leading-relaxed text-[var(--plg-muted)]">

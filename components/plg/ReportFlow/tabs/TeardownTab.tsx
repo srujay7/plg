@@ -8,7 +8,7 @@ function InfoTip({ children }: { children: React.ReactNode }) {
       <span className="flex h-4 w-4 cursor-help items-center justify-center rounded-full border border-[var(--plg-gap)] text-[10px] font-bold text-[var(--plg-muted)] group-hover:border-[var(--plg-secondary)] group-hover:text-[var(--plg-secondary)]">
         i
       </span>
-      <span className="pointer-events-none absolute right-0 top-[calc(100%+10px)] z-[45] w-[250px] rounded-[10px] border border-white/10 bg-[#1B0F2C] p-3.5 text-xs font-normal leading-relaxed text-white opacity-0 shadow-[0_14px_34px_rgba(0,0,0,.5)] transition group-hover:opacity-100 [&_b]:text-white">
+      <span className="pointer-events-none absolute right-0 top-[calc(100%+10px)] z-[45] w-[250px] rounded-[10px] border border-[var(--plg-hair)] bg-[var(--plg-ink)] p-3.5 text-xs font-normal leading-relaxed text-[var(--plg-paper)] opacity-0 shadow-[0_14px_34px_rgba(33,2,53,.18)] transition group-hover:opacity-100 [&_b]:text-[var(--plg-paper)]">
         {children}
       </span>
     </span>
@@ -18,8 +18,8 @@ function InfoTip({ children }: { children: React.ReactNode }) {
 const DISP_STYLE: Record<string, string> = {
   amend: "bg-[rgba(138,141,255,.16)] text-[var(--plg-indigo)]",
   append: "bg-[rgba(90,175,254,.16)] text-[var(--plg-accent)]",
-  new: "bg-[rgba(63,224,165,.16)] text-[#4FEAB0]",
-  deferred: "bg-[rgba(255,184,64,.16)] text-[#FFC15E]",
+  new: "bg-[rgba(63,224,165,.16)] text-[var(--plg-good)]",
+  deferred: "bg-[rgba(255,184,64,.16)] text-[#92400E]",
 };
 const DISP_LABEL: Record<string, string> = {
   amend: "Amend",
@@ -37,15 +37,42 @@ function Disposition({ kind }: { kind: string }) {
 }
 
 const QA_STATUS_STYLE: Record<string, string> = {
-  closed: "bg-[rgba(63,224,165,.16)] text-[#4FEAB0]",
-  deferred: "bg-[rgba(255,184,64,.16)] text-[#FFC15E]",
-  notadded: "bg-white/[0.07] text-[var(--plg-muted)]",
+  closed: "bg-[rgba(63,224,165,.16)] text-[var(--plg-good)]",
+  deferred: "bg-[rgba(255,184,64,.16)] text-[#92400E]",
+  notadded: "bg-[var(--plg-surface)] text-[var(--plg-muted)]",
 };
 const QA_STATUS_LABEL: Record<string, string> = {
   closed: "Closed",
   deferred: "Deferred",
   notadded: "Not added",
 };
+
+// Color the score chips by how healthy the score is — green/amber/red — so the two
+// numbers read at a glance instead of blending into flat gray text.
+function scoreTone(score: number) {
+  if (score >= 75) {
+    return { border: "rgba(20,122,82,.35)", bg: "rgba(20,122,82,.1)", text: "var(--plg-good)" };
+  }
+  if (score >= 50) {
+    return { border: "rgba(255,184,64,.5)", bg: "rgba(255,184,64,.14)", text: "#92400E" };
+  }
+  return { border: "rgba(192,57,43,.35)", bg: "rgba(192,57,43,.1)", text: "var(--plg-error)" };
+}
+
+function ScoreChip({ icon, label, score, tooltip }: { icon: string; label: string; score: number; tooltip: React.ReactNode }) {
+  const tone = scoreTone(score);
+  return (
+    <span
+      className="inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-[13px] font-semibold"
+      style={{ border: `1.5px solid ${tone.border}`, background: tone.bg, color: tone.text }}
+    >
+      <span aria-hidden>{icon}</span>
+      {label}
+      <b className="text-[15px] font-extrabold">{score}%</b>
+      <InfoTip>{tooltip}</InfoTip>
+    </span>
+  );
+}
 
 // SKU teardown tab (PLG-04): SEO + AEO readiness score cards, revenue-at-risk card,
 // PDP-vs-AI-recommendation diff rows, Q&A disposition table, and the rewrite rules list.
@@ -55,11 +82,20 @@ export function TeardownTab() {
   return (
     <div className="mx-auto max-w-[1120px] px-7 py-12">
       <div className="max-w-[64ch]">
-        <div className="text-xs font-semibold uppercase tracking-[.14em] text-[var(--plg-accent)]">
-          1 ASIN on Basic
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="text-xs font-semibold uppercase tracking-[.14em] text-[var(--plg-accent)]">
+            1 ASIN on Basic
+          </div>
+          <button
+            disabled
+            title="Adding more ASINs isn't available on Basic — Pro covers up to 10, refreshed monthly"
+            className="flex flex-none cursor-not-allowed items-center gap-1 rounded-full border border-[var(--plg-hair)] px-2.5 py-1 text-[11px] font-semibold text-[var(--plg-muted)]"
+          >
+            <span aria-hidden>🔒</span> + Add ASIN
+          </button>
         </div>
         <h2 className="mt-2 text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
-          SKU teardown — content-health scores + advisory rewrite
+          ASIN Optimization — content-health scores + advisory rewrite
         </h2>
         <p className="mt-3 text-base text-[var(--plg-text2)]">
           Scraped current PDP content, diagnosed, and rewritten for both classic SEO and
@@ -67,92 +103,51 @@ export function TeardownTab() {
         </p>
       </div>
 
-      <div className="mt-5.5 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="relative rounded-2xl border border-white/10 bg-white/[0.045] p-5.5 backdrop-blur-xl">
-          <div className="flex items-center justify-between gap-2.5">
-            <div className="text-[12.5px] font-semibold text-[var(--plg-muted)]">SEO readiness</div>
-            <InfoTip>
+      <div className="mt-5.5 flex items-center gap-1.5 text-[12px] text-[var(--plg-muted)]">
+        <span aria-hidden>📦</span> {TEARDOWN.asin}
+      </div>
+      <div className="mt-1 text-[16px] font-semibold text-[var(--plg-ink)]">{TEARDOWN.product}</div>
+
+      <div className="mt-3.5 flex flex-wrap items-center gap-2.5">
+        <ScoreChip
+          icon="🔍"
+          label="SEO readiness"
+          score={TEARDOWN.seoScore}
+          tooltip={
+            <>
               <b>How it&rsquo;s calculated:</b> Title keyword coverage, bullet &amp; description
               completeness, backend search terms, and image/A+ content presence — scored against
               Amazon SEO best practices for this category.
-            </InfoTip>
-          </div>
-          <div className="mt-2.5 min-h-[34px] text-[12.5px] leading-snug text-[var(--plg-text2)]">
-            How complete and keyword-optimized this listing is for classic Amazon search.
-          </div>
-          <div className="my-3.5 h-2.5 overflow-hidden rounded-md bg-white/[0.09]">
-            <div className="h-full rounded-md bg-[var(--plg-indigo)]" style={{ width: `${TEARDOWN.seoScore}%` }} />
-          </div>
-          <div className="font-mono text-2xl font-medium text-[var(--plg-ink)]">
-            {TEARDOWN.seoScore}
-            <span className="text-sm text-[var(--plg-muted)]"> / 100</span>
-          </div>
-        </div>
-
-        <div className="relative rounded-2xl border border-white/10 bg-white/[0.045] p-5.5 backdrop-blur-xl">
-          <div className="flex items-center justify-between gap-2.5">
-            <div className="text-[12.5px] font-semibold text-[var(--plg-muted)]">AEO readiness</div>
-            <InfoTip>
+            </>
+          }
+        />
+        <ScoreChip
+          icon="✨"
+          label="AEO readiness"
+          score={TEARDOWN.aeoScore}
+          tooltip={
+            <>
               <b>How it&rsquo;s calculated:</b> Coverage of the attributes and phrasing from the
-              shopper prompts and on-page Q&amp;A scored above — how well this ASIN&rsquo;s
-              content gives Alexa AI what it needs to cite this product by name.
-            </InfoTip>
-          </div>
-          <div className="mt-2.5 min-h-[34px] text-[12.5px] leading-snug text-[var(--plg-text2)]">
-            How ready this listing&rsquo;s content is to be cited in Alexa AI&rsquo;s answers.
-          </div>
-          <div className="my-3.5 h-2.5 overflow-hidden rounded-md bg-white/[0.09]">
-            <div className="h-full rounded-md bg-[var(--plg-accent)]" style={{ width: `${TEARDOWN.aeoScore}%` }} />
-          </div>
-          <div className="font-mono text-2xl font-medium text-[var(--plg-ink)]">
-            {TEARDOWN.aeoScore}
-            <span className="text-sm text-[var(--plg-muted)]"> / 100</span>
-          </div>
+              shopper prompts and on-page Q&amp;A scored above — how well this ASIN&rsquo;s content
+              gives Alexa AI what it needs to cite this product by name.
+            </>
+          }
+        />
+      </div>
+
+      <div className="mt-7 flex flex-wrap items-center justify-between gap-3">
+        <div className="text-[11.5px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
+          PDP vs AI recommendations
         </div>
-
-        <div className="relative rounded-2xl border border-[rgba(255,122,80,.4)] bg-gradient-to-b from-[rgba(255,122,80,.14)] to-[rgba(255,122,80,.03)] p-5.5 shadow-[0_10px_30px_rgba(255,90,50,.2)]">
-          <div className="absolute -top-2.5 left-4.5 rounded-full bg-gradient-to-r from-[#FFA36B] to-[#FF5C4D] px-3 py-1 text-[10px] font-extrabold uppercase tracking-[.05em] text-[#2B0A02] shadow-[0_6px_16px_rgba(255,90,50,.45)]">
-            ⚠ Highest priority
-          </div>
-          <div className="flex items-center justify-between gap-2.5">
-            <div className="text-[12.5px] font-semibold text-[#FFB08C]">Revenue at risk</div>
-            <InfoTip>
-              <b>How it&rsquo;s calculated:</b> Same AI Visibility/Rank gap × query volume (SQP) ×
-              conversion × AOV model as the brand-level estimate above, scoped to Alexa
-              AI (AEO/chatbot) traffic on this ASIN&rsquo;s 2 weakest topics — not overall revenue.
-              Directional, not measured.
-            </InfoTip>
-          </div>
-          <div className="mt-2.5 min-h-[34px] text-[12.5px] leading-snug text-[var(--plg-text2)]">
-            Annual revenue lost to competitors that get cited instead — on AEO/chatbot traffic
-            alone.
-          </div>
-          <div className="my-3.5 h-2.5 overflow-hidden rounded-md bg-white/[0.09]">
-            <div className="h-full rounded-md bg-gradient-to-r from-[#FFA36B] to-[#FF5C4D]" style={{ width: "88%" }} />
-          </div>
-          <div className="font-mono text-[26px] font-medium text-[#FF8A65]">
-            ${(TEARDOWN.riskLow / 1000).toFixed(0)}K–${(TEARDOWN.riskHigh / 1000).toFixed(0)}K
-          </div>
-        </div>
+        <button
+          disabled
+          title="Publishing isn't available yet — this report is advisory only in v1"
+          className="flex flex-none cursor-not-allowed items-center gap-1.5 rounded-lg bg-[var(--plg-hair)] px-4 py-2 text-[13px] font-semibold text-[var(--plg-muted)]"
+        >
+          <span aria-hidden>🔒</span> Publish to PDP
+        </button>
       </div>
-
-      <div className="mt-5 flex flex-wrap gap-6 border-t border-white/10 pt-4 text-[12.5px] text-[var(--plg-muted)]">
-        <span>
-          <b className="text-[var(--plg-ink)]">ASIN</b> &nbsp;{TEARDOWN.asin}
-        </span>
-        <span>
-          <b className="text-[var(--plg-ink)]">Product</b> &nbsp;{TEARDOWN.product}
-        </span>
-        <span>
-          <b className="text-[var(--plg-ink)]">Inputs used</b> &nbsp;current PDP content &middot;
-          on-page chips &middot; customer Q&amp;A &middot; the 18 category prompts scored above
-        </span>
-      </div>
-
-      <div className="mt-7 text-[11.5px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
-        PDP vs AI recommendations
-      </div>
-      <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.045] p-6 backdrop-blur-xl">
+      <div className="mt-3 rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-6">
         <div className="hidden grid-cols-[150px_1fr_1fr] gap-5 pb-3.5 md:grid">
           <div />
           <div className="text-[11px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
@@ -168,7 +163,7 @@ export function TeardownTab() {
         {TEARDOWN.rows.map((row) => (
           <div
             key={row.field}
-            className="grid grid-cols-1 gap-1.5 border-t border-white/10 py-4.5 first:border-t-0 md:grid-cols-[150px_1fr_1fr] md:items-start md:gap-5"
+            className="grid grid-cols-1 gap-1.5 border-t border-[var(--plg-hair)] py-4.5 first:border-t-0 md:grid-cols-[150px_1fr_1fr] md:items-start md:gap-5"
           >
             <div className="pt-0.5 text-[12.5px] font-bold text-[var(--plg-ink)]">{row.field}</div>
             <div className={`text-[13.5px] leading-relaxed ${row.pdp ? "text-[var(--plg-text2)]" : "italic text-[var(--plg-gap)]"}`}>
@@ -179,7 +174,7 @@ export function TeardownTab() {
                 <Disposition kind={row.disposition} />
               </span>
               <div
-                className="[&_del]:rounded-[3px] [&_del]:bg-[rgba(255,90,110,.14)] [&_del]:px-0.5 [&_del]:text-[#FF8FA3] [&_del]:line-through [&_ins]:rounded-[3px] [&_ins]:bg-[rgba(63,224,165,.14)] [&_ins]:px-0.5 [&_ins]:font-semibold [&_ins]:text-[#4FEAB0] [&_ins]:no-underline"
+                className="[&_del]:rounded-[3px] [&_del]:bg-[rgba(255,90,110,.14)] [&_del]:px-0.5 [&_del]:text-[var(--plg-error)] [&_del]:line-through [&_ins]:rounded-[3px] [&_ins]:bg-[rgba(63,224,165,.14)] [&_ins]:px-0.5 [&_ins]:font-semibold [&_ins]:text-[var(--plg-good)] [&_ins]:no-underline"
                 dangerouslySetInnerHTML={{ __html: row.aiHtml }}
               />
               {row.why && (
@@ -188,8 +183,8 @@ export function TeardownTab() {
                 </div>
               )}
               {"legalFlag" in row && row.legalFlag && (
-                <div className="mt-3 rounded-md border-l-[3px] border-[#FF6B81] bg-[rgba(255,90,110,.10)] p-3 text-[12.5px] leading-relaxed text-[#FFC7D1]">
-                  <b className="mb-1 block text-[#FF8FA3]">⚠ Held for legal review — not included in this proposal</b>
+                <div className="mt-3 rounded-md border-l-[3px] border-[var(--plg-error)] bg-[rgba(192,57,43,.08)] p-3 text-[12.5px] leading-relaxed text-[var(--plg-error)]">
+                  <b className="mb-1 block text-[var(--plg-error)]">⚠ Held for legal review — not included in this proposal</b>
                   {row.legalFlag}
                 </div>
               )}
@@ -211,9 +206,9 @@ export function TeardownTab() {
         How each answer-engine question was handled
       </div>
       <div className="mt-3 overflow-x-auto">
-        <table className="w-full min-w-[560px] border-collapse overflow-hidden rounded-2xl border border-white/10 bg-white/[0.045] text-[13px] backdrop-blur-xl">
+        <table className="w-full min-w-[560px] border-collapse overflow-hidden rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] text-[13px]">
           <thead>
-            <tr className="bg-white/[0.035]">
+            <tr className="bg-[var(--plg-surface)]">
               <th className="px-3 py-2.5 text-left text-[10.5px] uppercase tracking-[.05em] text-[var(--plg-ink)]">
                 Customer Q&amp;A on the PDP
               </th>
@@ -227,7 +222,7 @@ export function TeardownTab() {
           </thead>
           <tbody>
             {TEARDOWN.qa.map((row) => (
-              <tr key={row.question} className="border-t border-white/10 align-top">
+              <tr key={row.question} className="border-t border-[var(--plg-hair)] align-top">
                 <td className="px-3 py-2.5 text-[var(--plg-text2)]">{row.question}</td>
                 <td className="px-3 py-2.5 text-[var(--plg-text2)]">{row.answer}</td>
                 <td className="px-3 py-2.5 text-[var(--plg-text2)]">
@@ -242,7 +237,7 @@ export function TeardownTab() {
         </table>
       </div>
 
-      <div className="mt-5.5 rounded-2xl border border-white/10 bg-white/[0.035] p-5.5">
+      <div className="mt-5.5 rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-surface)] p-5.5">
         <h4 className="mb-2.5 text-[13px] font-bold text-[var(--plg-ink)]">The rules this rewrite follows</h4>
         <ol className="list-decimal pl-5 text-[13px] leading-relaxed text-[var(--plg-text2)]">
           {TEARDOWN.rules.map((rule) => (

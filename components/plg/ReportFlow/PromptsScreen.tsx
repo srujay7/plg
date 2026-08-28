@@ -27,7 +27,6 @@ export function PromptsScreen({
   const [addInput, setAddInput] = useState("");
 
   const totalSelected = prompts.filter((p) => p.checked).length;
-  const unassignedCount = prompts.filter((p) => !p.topic).length;
   const customPromptCount = prompts.filter((p) => p.source === "custom").length;
   const canAddCustom = customPromptCount < MAX_CUSTOM_PROMPTS && prompts.length < TOTAL_PROMPT_CAP;
 
@@ -36,14 +35,8 @@ export function PromptsScreen({
     return acc;
   }, {});
 
-  const allChecked = prompts.length > 0 && prompts.every((p) => p.checked);
-
   function toggleChecked(id: number) {
     onChangePrompts(prompts.map((p) => (p.id === id ? { ...p, checked: !p.checked } : p)));
-  }
-  function toggleAll() {
-    const next = !allChecked;
-    onChangePrompts(prompts.map((p) => ({ ...p, checked: next })));
   }
   function removePrompt(id: number) {
     onChangePrompts(prompts.filter((p) => p.id !== id));
@@ -63,7 +56,7 @@ export function PromptsScreen({
     <div>
       <CurationMasthead brand={brand} />
       <div className="flex justify-center px-6 py-8">
-      <div className="w-full max-w-[860px] rounded-2xl border border-white/10 bg-white/[0.045] p-11 shadow-[0_30px_80px_rgba(0,0,0,.6)] backdrop-blur-xl">
+      <div className="w-full max-w-[860px] rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-11 shadow-[0_1px_2px_rgba(33,2,53,.04)]">
         <button
           onClick={onBack}
           className="mb-4 text-[13px] text-[var(--plg-muted)] hover:text-[var(--plg-indigo)]"
@@ -84,25 +77,13 @@ export function PromptsScreen({
           <span>
             <b className="text-[var(--plg-ink)]">{totalSelected}</b> of {prompts.length} prompts
             selected
-            {unassignedCount > 0 && (
-              <>
-                {" "}
-                &middot; <b className="text-[var(--plg-ink)]">{unassignedCount}</b> without a topic
-              </>
-            )}
           </span>
           <span>~10&ndash;15 min once generated</span>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
-          <div className="flex items-center gap-3 border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
-            <input
-              type="checkbox"
-              checked={allChecked}
-              onChange={toggleAll}
-              title="Select all"
-              className="h-[15px] w-[15px] flex-none cursor-pointer accent-[var(--plg-indigo)]"
-            />
+        <div className="overflow-hidden rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-surface)]">
+          <div className="flex items-center gap-3 border-b border-[var(--plg-hair)] bg-[var(--plg-surface-2)] px-4 py-2.5">
+            <span className="w-[15px] flex-none" />
             <span className="flex-1 text-[10.5px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
               Shopper prompt
             </span>
@@ -112,12 +93,12 @@ export function PromptsScreen({
             <span className="w-6 flex-none" />
           </div>
 
-          <div className="max-h-[420px] divide-y divide-white/[0.06] overflow-y-auto">
+          <div className="max-h-[420px] divide-y divide-[var(--plg-hair)] overflow-y-auto">
             {prompts.map((p) => (
               <div
                 key={p.id}
                 className={cn(
-                  "group flex items-start gap-3 px-4 py-3 transition hover:bg-white/[0.035]",
+                  "group flex items-start gap-3 px-4 py-3 transition hover:bg-[var(--plg-surface-2)]",
                   !p.checked && "opacity-45",
                   p.source === "custom" && "border-l-2 border-[var(--plg-accent)] bg-[rgba(90,175,254,.06)]"
                 )}
@@ -131,7 +112,7 @@ export function PromptsScreen({
                 <div className="flex-1 text-[13.5px] leading-relaxed text-[var(--plg-ink)]">{p.text}</div>
                 <div className="flex w-[150px] flex-none flex-wrap items-center gap-1">
                   {p.topic ? (
-                    <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[11px] font-medium text-[var(--plg-text2)]">
+                    <span className="inline-flex items-center rounded-full border border-[var(--plg-hair)] bg-[var(--plg-paper)] px-2.5 py-1 text-[11px] font-medium text-[var(--plg-text2)]">
                       {p.topic}
                     </span>
                   ) : (
@@ -157,30 +138,34 @@ export function PromptsScreen({
           </div>
         </div>
 
-        <div className="mt-3.5 flex gap-2">
+        <div className="mt-3.5 text-[12.5px] text-[var(--plg-muted)]">
+          {canAddCustom ? (
+            <>You get <b className="text-[var(--plg-ink)]">1 free prompt</b> to add your own.</>
+          ) : customPromptCount >= MAX_CUSTOM_PROMPTS ? (
+            "You've used your free prompt — delete it below to add a different one."
+          ) : (
+            `You've reached the ${TOTAL_PROMPT_CAP}-prompt limit.`
+          )}
+        </div>
+        <div className="mt-1.5 flex gap-2">
           <input
             value={addInput}
             onChange={(e) => setAddInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && addPrompt()}
             disabled={!canAddCustom}
             placeholder="+ Add a prompt of your own — a topic isn't required"
-            className="flex-1 rounded-[10px] border border-white/10 bg-white/[0.035] px-3.5 py-2.5 text-[13.5px] text-[var(--plg-ink)] outline-none focus:border-[var(--plg-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
+            title={!canAddCustom ? "Delete your added prompt below to add a new one" : undefined}
+            className="flex-1 rounded-[10px] border border-[var(--plg-hair)] bg-[var(--plg-surface)] px-3.5 py-2.5 text-[13.5px] text-[var(--plg-ink)] outline-none focus:border-[var(--plg-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
           />
           <button
             onClick={addPrompt}
             disabled={!canAddCustom}
-            className="rounded-[10px] border border-white/10 bg-white/[0.045] px-4.5 py-2.5 text-[13.5px] font-semibold text-[var(--plg-ink)] hover:border-[var(--plg-indigo)] hover:text-[var(--plg-indigo)] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-white/10 disabled:hover:text-[var(--plg-ink)]"
+            title={!canAddCustom ? "Delete your added prompt below to add a new one" : undefined}
+            className="rounded-[10px] border border-[var(--plg-hair)] bg-[var(--plg-surface)] px-4.5 py-2.5 text-[13.5px] font-semibold text-[var(--plg-ink)] hover:border-[var(--plg-indigo)] hover:text-[var(--plg-indigo)] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-[var(--plg-hair)] disabled:hover:text-[var(--plg-ink)]"
           >
             Add
           </button>
         </div>
-        {!canAddCustom && (
-          <div className="mt-1.5 text-xs text-[var(--plg-muted)]">
-            {customPromptCount >= MAX_CUSTOM_PROMPTS
-              ? "You've added your custom prompt."
-              : `You've reached the ${TOTAL_PROMPT_CAP}-prompt limit.`}
-          </div>
-        )}
 
         <PrimaryButton className="mt-4.5 w-full !py-3" onClick={onGenerate}>
           Generate my report

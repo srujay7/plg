@@ -26,7 +26,7 @@ export function TestimonialCarousel() {
   const peek = TCAR_TESTIMONIALS[(idx + 1) % n];
 
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden border-l border-white/10 bg-[#0B0714] p-14">
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden border-l border-[var(--plg-hair)] bg-[var(--plg-surface)] p-14">
       <div className="plg-dotfield" aria-hidden="true" />
       <div className="relative z-10 w-full max-w-[440px]">
         <div className="mb-3.5 text-[11px] font-bold uppercase tracking-[0.05em] text-[var(--plg-accent)]">
@@ -34,7 +34,7 @@ export function TestimonialCarousel() {
         </div>
         <div className="relative flex gap-3.5 overflow-hidden">
           <div
-            className="plg-glass w-full max-w-[360px] flex-none rounded-2xl px-[22px] pb-5 pt-6 shadow-[0_24px_50px_-20px_rgba(0,0,0,.55)] transition-opacity duration-300"
+            className="plg-glass w-full max-w-[360px] flex-none rounded-xl px-[22px] pb-5 pt-6 shadow-[0_1px_2px_rgba(33,2,53,.04)] transition-opacity duration-300"
             style={{ opacity: visible ? 1 : 0 }}
           >
             <p className="mb-5 min-h-[108px] text-[14.5px] leading-relaxed text-[var(--plg-ink)]">
@@ -50,7 +50,7 @@ export function TestimonialCarousel() {
               </div>
             </div>
           </div>
-          <div className="plg-glass hidden max-w-[360px] flex-none rounded-2xl px-[22px] pb-5 pt-6 opacity-30 sm:block">
+          <div className="plg-glass hidden max-w-[360px] flex-none rounded-xl px-[22px] pb-5 pt-6 opacity-30 sm:block">
             <p className="min-h-[108px] text-[14.5px] leading-relaxed text-[var(--plg-ink)]">
               &ldquo;{peek.quote}&rdquo;
             </p>

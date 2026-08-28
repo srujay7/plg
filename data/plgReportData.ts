@@ -1,6 +1,6 @@
 // Sample data for the AEO PLG AI Visibility report (PLG-03 through PLG-07).
 // Ported from the aeo-plg-visibility-report-dark_3.html prototype's PROMPTS / LEADERBOARD /
-// STACKUP / META arrays — same illustrative numbers for "Acme Pet Co." (fictional).
+// META arrays — same illustrative numbers for "Acme Pet Co." (fictional).
 
 export type PromptRow = {
   q: string;
@@ -41,37 +41,8 @@ export const LEADERBOARD: [string, number][] = [
   ["Nutro", 55], ["Merrick", 49], ["Rachael Ray Nutrish", 44],
 ];
 
-export type StackupRow = [name: string, score: number, isBrand: boolean];
-
-export type StackupTopic = {
-  topic: string;
-  loseNote: string;
-  rows: StackupRow[];
-};
-
-export const STACKUP: StackupTopic[] = [
-  {
-    topic: "Senior dog food",
-    loseNote: "You lose 7 of 25 prompts to Blue Buffalo, 4 to Hill's Science Diet",
-    rows: [
-      ["Blue Buffalo", 88, false],
-      ["Acme Pet Co.", 74, true],
-      ["Hill's Science Diet", 69, false],
-    ],
-  },
-  {
-    topic: "Grain-free dog food",
-    loseNote: "You lose 14 of 25 prompts to the top 3 named competitors",
-    rows: [
-      ["Wellness Core", 81, false],
-      ["Royal Canin", 65, false],
-      ["Acme Pet Co.", 29, true],
-    ],
-  },
-];
-
 // Named head-to-head competitor comparison (Competitors tab): reuses the same AI-shelf
-// score scale as the leaderboard/stack-up above (0-100, position-weighted composite) —
+// score scale as the leaderboard above (0-100, position-weighted composite) —
 // intentionally not a separate vis%/SOV%/rank breakdown per competitor, since that
 // granularity only exists for the brand itself (derived from PROMPTS). Ported from the
 // mock's COMPETITORS / TOPIC_COMPETITOR_SCORES.
@@ -142,14 +113,6 @@ export const META = {
   reportId: "8f3k2x9a",
 };
 
-// Brand-level revenue-at-risk estimate (PLG-05): directional, not measured — see the
-// Academy page and PRD open questions for the method (AI Visibility/Rank gap × category
-// query volume (SQP) × conversion × AOV, scoped to Alexa AI/AEO traffic only).
-export const BRAND_RISK = {
-  low: 1_200_000,
-  high: 1_800_000,
-};
-
 // ---------- topic + prompt curation bank (Topics / Prompts screens) ----------
 
 export const OB_PREFILLED_TOPICS = [
@@ -214,8 +177,6 @@ export const TEARDOWN = {
   product: "Acme Pet Co. Dry Dog Food, 30 lb Bag",
   seoScore: 58,
   aeoScore: 41,
-  riskLow: 90000,
-  riskHigh: 140000,
   rows: [
     {
       field: "Title",

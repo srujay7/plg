@@ -2,7 +2,7 @@
 // Ported from the aeo-plg-visibility-report-dark_3.html prototype's <script> block
 // (aggregate(), pct(), num1(), rnk(), nameList(), fmtDate()).
 
-import type { PromptRow } from "@/data/plgReportData";
+import { LEADERBOARD, META, type PromptRow } from "@/data/plgReportData";
 
 export type Aggregate = {
   vis: number;
@@ -23,6 +23,52 @@ export function aggregate(rows: PromptRow[]): Aggregate {
   return { vis, sov, rank, total, shown: present.length };
 }
 
+export type Citation = { rank: number; name: string; isBrand: boolean };
+
+/**
+ * The top-10 Alexa AI answers/SKUs for a single shopper prompt (PLG-03 tab drill-down):
+ * the brand-tracking leaderboard's other 9 brands, with the tracked brand slotted in at
+ * its own best position for that prompt — or omitted entirely when the brand doesn't
+ * appear (a gap prompt). Directional/illustrative, same as the rest of the leaderboard —
+ * there's no per-prompt SKU-level scrape yet.
+ */
+export function citationsForPrompt(p: PromptRow): Citation[] {
+  const others = LEADERBOARD.map(([name]) => name).filter((name) => name !== META.brand);
+  if (p.rank == null) {
+    return others.slice(0, 10).map((name, i) => ({ rank: i + 1, name, isBrand: false }));
+  }
+  const brandPos = Math.min(Math.max(Math.round(p.rank), 1), 10);
+  const citations: Citation[] = [];
+  let oi = 0;
+  for (let i = 1; i <= 10; i++) {
+    if (i === brandPos) citations.push({ rank: i, name: META.brand, isBrand: true });
+    else citations.push({ rank: i, name: others[oi++], isBrand: false });
+  }
+  return citations;
+}
+
+/**
+ * A short, directional mock of the assistant's actual answer text for a prompt — there's
+ * no real per-prompt response stored yet, so this is generated from the same citations
+ * list shown alongside it, purely for illustrating the "full response" drill-down.
+ */
+export function mockAssistantResponse(p: PromptRow, citations: Citation[]): string {
+  const names = citations.map((c) => c.name);
+  const top3 = names.slice(0, 3).join(", ");
+  const rest = names.slice(3, 8).join(", ");
+  const brandNote = p.rank
+    ? `${META.brand} shows up around position #${Math.round(p.rank)} among these picks.`
+    : `${META.brand} doesn't currently surface in this answer.`;
+  return (
+    `Here's a rundown of options for "${p.q}": ${top3}` +
+    (rest ? `, along with ${rest},` : "") +
+    ` are the names ${META.assistant} leans on most for this category, based on ingredient quality, ` +
+    `customer ratings, and how closely each product matches the request. ${brandNote} As with any AI ` +
+    `assistant, the exact list can shift between sessions — this is a snapshot, not a guarantee, and is ` +
+    `illustrative only for this report.`
+  );
+}
+
 export type TopicAggregate = Aggregate & { label: string };
 
 export function topicsFromPrompts(rows: PromptRow[]): TopicAggregate[] {
@@ -40,27 +86,6 @@ export const rnk = (v: number | null | undefined) =>
 
 export const nameList = (a: string[]) =>
   a.length <= 1 ? a[0] || "" : a.slice(0, -1).join(", ") + " and " + a.slice(-1);
-
-export const fmtMoneyShort = (v: number) =>
-  v >= 1_000_000 ? `$${(v / 1_000_000).toFixed(1)}M` : `$${(v / 1000).toFixed(0)}K`;
-
-/**
- * Distributes a brand-level revenue-at-risk range across a list of items (topics or
- * prompts), weighted toward the weakest performers — directional, same figure just
- * apportioned. Used by the Topic and Prompt tabs to derive a per-row estimate.
- */
-export function distributeRisk<T>(
-  items: T[],
-  weightOf: (item: T) => number,
-  total: { low: number; high: number }
-): { low: number; high: number }[] {
-  const weights = items.map((item) => Math.max(1, weightOf(item)));
-  const totalWeight = weights.reduce((s, w) => s + w, 0);
-  return weights.map((w) => ({
-    low: (total.low * w) / totalWeight,
-    high: (total.high * w) / totalWeight,
-  }));
-}
 
 export const fmtDate = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("en-US", {

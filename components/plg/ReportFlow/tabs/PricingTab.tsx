@@ -44,7 +44,7 @@ const FEATURES: { label: string; basic: string; pro: string; enterprise: string 
     enterprise: "Bank + full generation",
   },
   { label: "Metrics refresh", basic: "Point-in-time snapshot", pro: "Weekly", enterprise: "Continuous" },
-  { label: "SKU teardown", basic: "1 ASIN", pro: "Up to 10 SKUs, monthly", enterprise: "Full catalog" },
+  { label: "ASIN Optimization", basic: "1 ASIN", pro: "Up to 10 SKUs, monthly", enterprise: "Full catalog" },
   { label: "Act / publish / measure", basic: "No", pro: "No", enterprise: "Yes — full Content Agent" },
   { label: "Free 45-day pilot", basic: "Always offered", pro: "Always offered", enterprise: "The on-ramp" },
 ];
@@ -81,10 +81,10 @@ export function PricingTab({
         {TIERS.map((t) => (
           <div
             key={t.key}
-            className={`relative rounded-2xl border p-6 backdrop-blur-xl ${
+            className={`relative rounded-xl border p-6 ${
               t.highlight
-                ? "border-[rgba(90,175,254,.4)] bg-gradient-to-b from-[rgba(90,175,254,.12)] to-white/[0.02]"
-                : "border-white/10 bg-white/[0.045]"
+                ? "border-[rgba(90,175,254,.4)] bg-gradient-to-b from-[rgba(90,175,254,.12)] to-[var(--plg-paper)]"
+                : "border-[var(--plg-hair)] bg-[var(--plg-paper)]"
             }`}
           >
             {t.highlight && (
@@ -100,7 +100,7 @@ export function PricingTab({
               <span className="text-[13px] text-[var(--plg-muted)]">{t.cadence}</span>
             </div>
             <p className="mt-3 text-[13.5px] leading-relaxed text-[var(--plg-text2)]">{t.tagline}</p>
-            <ul className="mt-4.5 flex flex-col gap-2.5 border-t border-white/10 pt-4.5">
+            <ul className="mt-4.5 flex flex-col gap-2.5 border-t border-[var(--plg-hair)] pt-4.5">
               {FEATURES.map((f) => (
                 <li key={f.label} className="flex items-start gap-2 text-[13px] text-[var(--plg-text2)]">
                   <span className="mt-1.5 h-1.5 w-1.5 flex-none rounded-full bg-[var(--plg-indigo)]" />
@@ -116,10 +116,10 @@ export function PricingTab({
               disabled={t.ctaDisabled}
               className={
                 t.ctaDisabled
-                  ? "mt-6 w-full cursor-not-allowed rounded-[10px] border-[1.5px] border-white/10 bg-white/[0.02] px-5 py-3 text-sm font-bold text-[var(--plg-muted)]"
+                  ? "mt-6 w-full cursor-not-allowed rounded-[10px] border-[1.5px] border-[var(--plg-hair)] bg-[var(--plg-surface)] px-5 py-3 text-sm font-bold text-[var(--plg-muted)]"
                   : t.highlight
                   ? "mt-6 w-full rounded-[10px] bg-gradient-to-r from-[var(--plg-accent)] to-[var(--plg-secondary)] px-5 py-3 text-sm font-bold text-[#0B041A] shadow-[0_6px_20px_rgba(90,175,254,.35)]"
-                  : "mt-6 w-full rounded-[10px] border-[1.5px] border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-bold text-[var(--plg-ink)]"
+                  : "mt-6 w-full rounded-[10px] border-[1.5px] border-[var(--plg-hair)] bg-[var(--plg-paper)] px-5 py-3 text-sm font-bold text-[var(--plg-ink)]"
               }
             >
               {t.ctaLabel}

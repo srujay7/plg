@@ -45,7 +45,7 @@ export function TopicsScreen({
     <div>
       <CurationMasthead brand={brand} />
       <div className="flex justify-center px-6 py-8">
-      <div className="w-full max-w-[860px] rounded-2xl border border-white/10 bg-white/[0.045] p-11 shadow-[0_30px_80px_rgba(0,0,0,.6)] backdrop-blur-xl">
+      <div className="w-full max-w-[860px] rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-11 shadow-[0_1px_2px_rgba(33,2,53,.04)]">
         <div className="mb-2.5 text-xs font-semibold uppercase tracking-[.1em] text-[var(--plg-accent)]">
           Setting up your report &middot; Step 1 of 2
         </div>
@@ -105,7 +105,7 @@ export function TopicsScreen({
             <button
               key={t}
               onClick={() => addCandidate(t)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 text-[13px] font-medium text-[var(--plg-text2)] hover:border-[var(--plg-secondary)]"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[var(--plg-hair)] bg-[var(--plg-surface)] px-3 py-2 text-[13px] font-medium text-[var(--plg-text2)] hover:border-[var(--plg-secondary)]"
             >
               {t}
               <span className="font-bold text-[var(--plg-muted)]">+</span>

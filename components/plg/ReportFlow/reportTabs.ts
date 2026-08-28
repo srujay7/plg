@@ -9,6 +9,6 @@ export const REPORT_TABS: { key: TabKey; label: string }[] = [
   { key: "topic", label: "Topic" },
   { key: "prompt", label: "Prompts" },
   { key: "competitors", label: "Competitors" },
-  { key: "teardown", label: "SKU teardown" },
+  { key: "teardown", label: "ASIN Optimization" },
   { key: "pricing", label: "Pricing" },
 ];

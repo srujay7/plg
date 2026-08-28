@@ -19,7 +19,7 @@ export function TalkToSalesModal({
       onClick={onClose}
     >
       <div
-        className="w-[380px] rounded-2xl border border-white/10 bg-[#120B1E] p-[30px] shadow-[0_24px_70px_rgba(0,0,0,.55)] backdrop-blur-xl"
+        className="w-[380px] rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-[30px] shadow-[0_8px_24px_rgba(33,2,53,.1)]"
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="mb-2 text-[17px] font-semibold text-[var(--plg-ink)]">{title}</h3>

@@ -51,7 +51,7 @@ export function ReportView({
             </button>
             <button
               onClick={onUpgradeClick}
-              className="rounded-[10px] border-[1.5px] border-white/10 bg-white/[0.04] px-6 py-3.5 text-sm font-bold text-[var(--plg-ink)]"
+              className="rounded-[10px] border-[1.5px] border-[var(--plg-hair)] bg-[var(--plg-paper)] px-6 py-3.5 text-sm font-bold text-[var(--plg-ink)]"
             >
               Talk to sales about Pro
             </button>
@@ -59,7 +59,7 @@ export function ReportView({
         </div>
       </div>
 
-      <footer className="border-t border-white/10 px-7 py-11">
+      <footer className="border-t border-[var(--plg-hair)] px-7 py-11">
         <div className="mx-auto flex max-w-[1120px] flex-wrap items-start justify-between gap-6">
           <div className="flex items-center gap-2.5 font-bold tracking-tight text-[var(--plg-ink)]">
             <span

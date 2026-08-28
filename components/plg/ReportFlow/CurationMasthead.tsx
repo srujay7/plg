@@ -4,7 +4,7 @@
 export function CurationMasthead({ brand }: { brand: string }) {
   return (
     <div className="px-6 pb-2 pt-11 text-center">
-      <div className="mx-auto mb-3 inline-flex items-center rounded-full border border-white/10 bg-white/[0.045] px-3.5 py-1.5 text-[12.5px] font-semibold text-[var(--plg-ink)]">
+      <div className="mx-auto mb-3 inline-flex items-center rounded-full border border-[var(--plg-hair)] bg-[var(--plg-surface)] px-3.5 py-1.5 text-[12.5px] font-semibold text-[var(--plg-ink)]">
         {brand}
       </div>
       <h1 className="text-2xl font-bold text-[var(--plg-ink)] sm:text-[26px]">
