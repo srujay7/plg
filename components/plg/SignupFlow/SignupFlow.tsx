@@ -55,8 +55,6 @@ export function SignupFlow() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [emailStatus, setEmailStatus] = useState<EmailStatus>("unknown");
   const [resent, setResent] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -64,7 +62,6 @@ export function SignupFlow() {
   const [retailer, setRetailer] = useState(RETAILER_OPTIONS[0].value);
   const [description, setDescription] = useState("");
   const [asin, setAsin] = useState("");
-  const [handoff, setHandoff] = useState(false);
   const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   const isBlocked = emailStatus === "blocked";
@@ -91,10 +88,8 @@ export function SignupFlow() {
   }
 
   function handleContinueToReportSetup() {
-    if (handoff) return;
-    setHandoff(true);
     const params = new URLSearchParams({ brand: brand.trim() || "Your brand" });
-    setTimeout(() => router.push(`/plg/report?${params.toString()}`), 900);
+    router.push(`/plg/report?${params.toString()}`);
   }
 
   const otpFilled = useMemo(() => otp.every((d) => d.length === 1), [otp]);
@@ -155,35 +150,6 @@ export function SignupFlow() {
                 )}
               </div>
 
-              {!isBlocked && !isExisting && (
-                <>
-                  <div className="mb-4.5">
-                    <label className="mb-1.5 block text-[13px] font-semibold text-[var(--plg-ink)]">
-                      First name
-                    </label>
-                    <input
-                      type="text"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="Jane"
-                      className="w-full rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none transition focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
-                    />
-                  </div>
-                  <div className="mb-4.5">
-                    <label className="mb-1.5 block text-[13px] font-semibold text-[var(--plg-ink)]">
-                      Last name
-                    </label>
-                    <input
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      placeholder="Doe"
-                      className="w-full rounded-[6px] border-[1.5px] border-white/15 bg-white/[0.03] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none transition focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
-                    />
-                  </div>
-                </>
-              )}
-
               {isExisting ? (
                 <SecondaryButton
                   className="w-full"
@@ -195,7 +161,7 @@ export function SignupFlow() {
               ) : (
                 <PrimaryButton
                   className="w-full"
-                  disabled={!email || !firstName || !lastName}
+                  disabled={!email}
                   onClick={handleContinueFromScreen1}
                 >
                   Continue
@@ -248,7 +214,7 @@ export function SignupFlow() {
             </div>
           )}
 
-          {step === 3 && !handoff && (
+          {step === 3 && (
             <div>
               <button
                 className="mb-5 flex items-center gap-1.5 text-[13px] font-semibold text-[var(--plg-text2)] hover:text-[var(--plg-indigo)]"
@@ -341,20 +307,6 @@ export function SignupFlow() {
             </div>
           )}
 
-          {step === 3 && handoff && (
-            <div>
-              <h1 className="mb-2 text-2xl font-bold leading-tight text-[var(--plg-ink)]">
-                You&rsquo;re all set
-              </h1>
-              <p className="mb-7 text-sm leading-relaxed text-[var(--plg-text2)]">
-                Taking you into Content Agent — next you&rsquo;ll confirm your topics and shopper
-                prompts, then your AI Visibility report generates in the background.
-              </p>
-              <div className="py-3 text-center">
-                <div className="plg-spinner mx-auto" />
-              </div>
-            </div>
-          )}
         </div>
       </div>
 

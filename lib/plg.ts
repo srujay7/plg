@@ -80,6 +80,13 @@ export type CuratedPrompt = {
   edited: boolean;
 };
 
+const DEFAULT_CHECKED_PROMPTS = 5;
+export const TOTAL_PROMPT_CAP = 15;
+export const MAX_CUSTOM_PROMPTS = 1;
+// Curated/generated prompts stop short of the total cap so there's always room left for the
+// user's own custom prompt(s) without pushing the list past TOTAL_PROMPT_CAP.
+const CURATED_PROMPT_CAP = TOTAL_PROMPT_CAP - MAX_CUSTOM_PROMPTS;
+
 let promptIdCounter = 1;
 export function nextPromptId() {
   return promptIdCounter++;
@@ -100,6 +107,7 @@ export function syncPromptsForTopics(
   let prompts = existing.filter(
     (p) => p.source === "custom" || (p.topic && selectedTopics.includes(p.topic))
   );
+  let checkedCount = prompts.filter((p) => p.checked).length;
   selectedTopics.forEach((topic) => {
     const already = prompts.some((p) => p.topic === topic && p.source !== "custom");
     if (already) return;
@@ -112,13 +120,16 @@ export function syncPromptsForTopics(
           `best rated ${topic.toLowerCase()} on amazon`,
         ];
     texts.forEach((t) => {
+      if (prompts.length >= CURATED_PROMPT_CAP) return;
+      const checked = checkedCount < DEFAULT_CHECKED_PROMPTS;
+      if (checked) checkedCount++;
       prompts = [
         ...prompts,
         {
           id: nextPromptId(),
           topic,
           text: t,
-          checked: true,
+          checked,
           source: isUncovered ? "generated" : "curated",
           edited: false,
         },

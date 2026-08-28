@@ -166,6 +166,13 @@ export const OB_MORE_TOPICS = [
   "Large breed dog food",
   "Weight management dog food",
   "Limited ingredient dog food",
+  "Grain-inclusive dog food",
+  "High protein dog food",
+  "Freeze-dried dog food",
+  "Dog food toppers",
+  "Hypoallergenic dog food",
+  "Organic dog food",
+  "Dog dental chews",
 ];
 
 // Bank miss -> prompts generated live, not curated (PLG-03a coverage limit).

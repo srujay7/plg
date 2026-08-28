@@ -39,18 +39,12 @@ export function ReportFlow() {
   const [screen, setScreen] = useState<ProductScreen>(initialScreen);
   const [tab, setTab] = useState<TabKey>("brand");
   const [selectedTopics, setSelectedTopics] = useState<string[]>(OB_PREFILLED_TOPICS.slice());
-  const [customTopics, setCustomTopics] = useState<string[]>([]);
   const [prompts, setPrompts] = useState<CuratedPrompt[]>([]);
   const [modal, setModal] = useState<"pilot" | "upgrade" | null>(null);
 
   function finishGeneratingPrompts() {
     setPrompts((prev) => syncPromptsForTopics(prev, selectedTopics, OB_PROMPT_BANK, OB_UNCOVERED_TOPICS));
     setScreen("prompts");
-  }
-
-  function handleAddCustomTopic(topic: string) {
-    setCustomTopics((prev) => [...prev, topic]);
-    setSelectedTopics((prev) => [...prev, topic]);
   }
 
   return (
@@ -71,9 +65,7 @@ export function ReportFlow() {
         <TopicsScreen
           brand={brand}
           selectedTopics={selectedTopics}
-          customTopics={customTopics}
           onChangeSelected={setSelectedTopics}
-          onAddCustomTopic={handleAddCustomTopic}
           onContinue={() => setScreen("generatingPrompts")}
         />
       )}
