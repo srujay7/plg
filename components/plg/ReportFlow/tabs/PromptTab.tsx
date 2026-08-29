@@ -3,6 +3,7 @@
 import { Fragment, useState } from "react";
 import { PROMPTS, META, type PromptRow } from "@/data/plgReportData";
 import { citationsForPrompt, fmtDate, mockAssistantResponse, pct } from "@/lib/plg";
+import { RefreshReportButton } from "@/components/plg/shared/RefreshReportButton";
 
 type SortKey = "q" | "topic" | "vis" | "rank";
 
@@ -56,14 +57,17 @@ export function PromptTab() {
 
   return (
     <div className="mx-auto max-w-[1120px] px-7 py-12">
-      <div className="max-w-[64ch]">
-        <h2 className="text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
-          Every question {META.assistant} was asked
-        </h2>
-        <p className="mt-3 text-base text-[var(--plg-text2)]">
-          The exact, natural-language questions shoppers use — the raw material behind the
-          topic and brand numbers. Sort by any column.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="max-w-[64ch]">
+          <h2 className="text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
+            Every question {META.assistant} was asked
+          </h2>
+          <p className="mt-3 text-base text-[var(--plg-text2)]">
+            The exact, natural-language questions shoppers use — the raw material behind the
+            topic and brand numbers. Sort by any column.
+          </p>
+        </div>
+        <RefreshReportButton />
       </div>
 
       <div className="mt-5.5 overflow-x-auto">
@@ -107,7 +111,7 @@ export function PromptTab() {
                     }`}
                   >
                     <td className={`max-w-[520px] px-3.5 py-3.5 ${gap ? "text-[var(--plg-muted)]" : "text-[var(--plg-ink)]"}`}>
-                      <span className="mr-1.5 inline-block w-3 text-[10px] text-[var(--plg-muted)]">
+                      <span className="mr-2 inline-block w-3 text-[15px] font-bold text-[var(--plg-muted)]">
                         {expanded ? "▾" : "▸"}
                       </span>
                       {p.q}{" "}
@@ -146,56 +150,56 @@ export function PromptTab() {
                       const truncated = response.length > 160 ? response.slice(0, 160).trimEnd() + "…" : response;
                       return (
                         <tr className="border-b border-[var(--plg-hair)]">
-                          <td colSpan={4} className="bg-[var(--plg-surface)] px-3.5 py-3.5">
+                          <td colSpan={4} className="bg-[var(--plg-surface)] px-4.5 py-4.5">
                             <div className="rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)]">
-                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--plg-hair)] bg-[var(--plg-surface)] px-4.5 py-3">
-                                <div className="text-[13px] font-bold text-[var(--plg-ink)]">{META.assistant}</div>
-                                <div className="flex flex-none items-center gap-3">
-                                  <span className="text-[12px] text-[var(--plg-muted)]">{fmtDate(META.runDate)}</span>
-                                  <span className="rounded-md bg-[var(--plg-surface-2)] px-2.5 py-1 text-[11.5px] font-semibold text-[var(--plg-text2)]">
+                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--plg-hair)] bg-[var(--plg-surface)] px-5.5 py-4">
+                                <div className="text-[15px] font-bold text-[var(--plg-ink)]">{META.assistant}</div>
+                                <div className="flex flex-none items-center gap-3.5">
+                                  <span className="text-[13px] text-[var(--plg-muted)]">{fmtDate(META.runDate)}</span>
+                                  <span className="rounded-md bg-[var(--plg-surface-2)] px-3 py-1.5 text-[13px] font-semibold text-[var(--plg-text2)]">
                                     {citations.length} citations
                                   </span>
                                 </div>
                               </div>
-                              <div className="px-4.5 py-4">
-                                <div className="mb-2.5 text-[11px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
+                              <div className="px-5.5 py-5.5">
+                                <div className="mb-3 text-[12px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
                                   Brands mentioned
                                 </div>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-2.5">
                                   {citations.map((c) => (
                                     <span
                                       key={c.rank}
                                       className={
                                         c.isBrand
-                                          ? "inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-[var(--plg-accent)] bg-[rgba(194,49,255,.05)] px-2.5 py-1.5 text-[13px] font-semibold text-[var(--plg-accent)]"
-                                          : "inline-flex items-center gap-1.5 rounded-full border border-[var(--plg-hair)] px-2.5 py-1.5 text-[13px] text-[var(--plg-text2)]"
+                                          ? "inline-flex items-center gap-2 rounded-full border-[1.5px] border-[var(--plg-accent)] bg-[rgba(194,49,255,.05)] px-3.5 py-2 text-[14px] font-semibold text-[var(--plg-accent)]"
+                                          : "inline-flex items-center gap-2 rounded-full border border-[var(--plg-hair)] px-3.5 py-2 text-[14px] text-[var(--plg-text2)]"
                                       }
                                     >
                                       <span
                                         className={
                                           c.isBrand
-                                            ? "flex h-5 w-5 flex-none items-center justify-center rounded-full bg-[var(--plg-accent)] text-[10px] font-bold text-white"
-                                            : "flex h-5 w-5 flex-none items-center justify-center rounded-full bg-[var(--plg-surface-2)] text-[10px] font-semibold text-[var(--plg-muted)]"
+                                            ? "flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[var(--plg-accent)] text-[11px] font-bold text-white"
+                                            : "flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[var(--plg-surface-2)] text-[11px] font-semibold text-[var(--plg-muted)]"
                                         }
                                       >
                                         {c.name.charAt(0)}
                                       </span>
                                       {c.name}
-                                      {c.isBrand && <span className="text-[10px] font-bold">· YOU</span>}
+                                      {c.isBrand && <span className="text-[11px] font-bold">· YOU</span>}
                                     </span>
                                   ))}
                                 </div>
 
-                                <div className="mb-2.5 mt-4.5 text-[11px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
+                                <div className="mb-3 mt-5.5 text-[12px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
                                   Response
                                 </div>
-                                <p className="text-[13.5px] leading-relaxed text-[var(--plg-text2)]">
+                                <p className="text-[15px] leading-relaxed text-[var(--plg-text2)]">
                                   {showFullResponse ? response : truncated}
                                 </p>
                                 {response.length > 160 && (
                                   <button
                                     onClick={() => setShowFullResponse((v) => !v)}
-                                    className="mt-1.5 text-[13px] font-semibold text-[var(--plg-indigo)] hover:underline"
+                                    className="mt-2 text-[14px] font-semibold text-[var(--plg-indigo)] hover:underline"
                                   >
                                     {showFullResponse ? "Show less" : "Show more"}
                                   </button>

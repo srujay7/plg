@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { PROMPTS, META } from "@/data/plgReportData";
 import { pct, rnk, topicsFromPrompts, nameList, type TopicAggregate } from "@/lib/plg";
+import { RefreshReportButton } from "@/components/plg/shared/RefreshReportButton";
 
 type SortKey = "label" | "vis" | "sov" | "rank";
 
@@ -61,15 +62,18 @@ export function TopicTab() {
 
   return (
     <div className="mx-auto max-w-[1120px] px-7 py-12">
-      <div className="max-w-[64ch]">
-        <h2 className="text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
-          Where the brand is strong, and where there&rsquo;s room to climb
-        </h2>
-        <p className="mt-3 text-base text-[var(--plg-text2)]">
-          Each topic groups the shopper questions that share an intent — the same three
-          headline metrics as the Brand tab, broken out per topic. Click a column heading to
-          sort.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="max-w-[64ch]">
+          <h2 className="text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
+            Where the brand is strong, and where there&rsquo;s room to climb
+          </h2>
+          <p className="mt-3 text-base text-[var(--plg-text2)]">
+            Each topic groups the shopper questions that share an intent — the same three
+            headline metrics as the Brand tab, broken out per topic. Click a column heading to
+            sort.
+          </p>
+        </div>
+        <RefreshReportButton />
       </div>
 
       <div className="mt-5.5 overflow-hidden rounded-xl border border-[var(--plg-hair)]">

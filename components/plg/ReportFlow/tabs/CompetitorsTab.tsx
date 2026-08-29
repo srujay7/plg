@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { COMPETITORS, LEADERBOARD, META, TOPIC_COMPETITOR_SCORES } from "@/data/plgReportData";
+import { RefreshReportButton } from "@/components/plg/shared/RefreshReportButton";
 
 const LEADERBOARD_MAP = Object.fromEntries(LEADERBOARD);
 
@@ -32,17 +33,20 @@ export function CompetitorsTab() {
 
   return (
     <div className="mx-auto max-w-[1120px] px-7 py-12">
-      <div className="max-w-[64ch]">
-        <div className="text-xs font-semibold uppercase tracking-[.14em] text-[var(--plg-accent)]">
-          Named competitor comparison
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="max-w-[64ch]">
+          <div className="text-xs font-semibold uppercase tracking-[.14em] text-[var(--plg-accent)]">
+            Named competitor comparison
+          </div>
+          <h2 className="mt-2 text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
+            How you compare, competitor by competitor
+          </h2>
+          <p className="mt-3 text-base text-[var(--plg-text2)]">
+            Pick a named competitor to see exactly where {META.brand} is ahead or behind — head-to-head
+            on the same AI-shelf score used in the leaderboard, broken out by topic.
+          </p>
         </div>
-        <h2 className="mt-2 text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
-          How you compare, competitor by competitor
-        </h2>
-        <p className="mt-3 text-base text-[var(--plg-text2)]">
-          Pick a named competitor to see exactly where {META.brand} is ahead or behind — head-to-head
-          on the same AI-shelf score used in the leaderboard, broken out by topic.
-        </p>
+        <RefreshReportButton />
       </div>
 
       <div className="mt-5.5 flex flex-wrap gap-2">

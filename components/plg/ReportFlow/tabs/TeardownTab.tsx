@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { TEARDOWN } from "@/data/plgReportData";
+import { KnowledgeSpaceModal } from "@/components/plg/shared/KnowledgeSpaceModal";
 
 function InfoTip({ children }: { children: React.ReactNode }) {
   return (
@@ -79,20 +81,25 @@ function ScoreChip({ icon, label, score, tooltip }: { icon: string; label: strin
 // Advisory only — nothing here is published. Ported from the .scorepair/.teardowncompare/
 // .qatable/.ruleslist markup + inline <ins>/<del> diff HTML in the mock.
 export function TeardownTab() {
+  const [showAddAsinNote, setShowAddAsinNote] = useState(false);
+  const [knowledgeOpen, setKnowledgeOpen] = useState(false);
+
   return (
     <div className="mx-auto max-w-[1120px] px-7 py-12">
       <div className="max-w-[64ch]">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <div className="text-xs font-semibold uppercase tracking-[.14em] text-[var(--plg-accent)]">
-            1 ASIN on Basic
-          </div>
+        <div className="relative flex flex-wrap items-center gap-2.5">
           <button
-            disabled
-            title="Adding more ASINs isn't available on Basic — Pro covers up to 10, refreshed monthly"
-            className="flex flex-none cursor-not-allowed items-center gap-1 rounded-full border border-[var(--plg-hair)] px-2.5 py-1 text-[11px] font-semibold text-[var(--plg-muted)]"
+            onClick={() => setShowAddAsinNote((v) => !v)}
+            className="flex flex-none items-center gap-1 rounded-full border border-[var(--plg-hair)] px-2.5 py-1 text-[11px] font-semibold text-[var(--plg-text2)] hover:border-[var(--plg-secondary)]"
           >
-            <span aria-hidden>🔒</span> + Add ASIN
+            + Add ASIN
           </button>
+          {showAddAsinNote && (
+            <div className="absolute left-0 top-[calc(100%+8px)] z-20 w-[280px] rounded-lg border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-3.5 text-[12.5px] leading-relaxed text-[var(--plg-text2)] shadow-[0_14px_34px_rgba(33,2,53,.14)]">
+              You&rsquo;re on Free (1 ASIN). <b className="text-[var(--plg-ink)]">Upgrade to Pro</b> to add up
+              to 10 ASINs and get recommendations refreshed monthly.
+            </div>
+          )}
         </div>
         <h2 className="mt-2 text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
           ASIN Optimization — content-health scores + advisory rewrite
@@ -139,13 +146,21 @@ export function TeardownTab() {
         <div className="text-[11.5px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
           PDP vs AI recommendations
         </div>
-        <button
-          disabled
-          title="Publishing isn't available yet — this report is advisory only in v1"
-          className="flex flex-none cursor-not-allowed items-center gap-1.5 rounded-lg bg-[var(--plg-hair)] px-4 py-2 text-[13px] font-semibold text-[var(--plg-muted)]"
-        >
-          <span aria-hidden>🔒</span> Publish to PDP
-        </button>
+        <div className="flex flex-none items-center gap-2.5">
+          <button
+            onClick={() => setKnowledgeOpen(true)}
+            className="flex flex-none items-center gap-1.5 rounded-lg border-[1.5px] border-[var(--plg-indigo)] px-4 py-2 text-[13px] font-semibold text-[var(--plg-indigo)] transition hover:bg-[rgba(31,34,178,.06)]"
+          >
+            Train your agent
+          </button>
+          <button
+            disabled
+            title="Publishing isn't available yet — this report is advisory only in v1"
+            className="flex flex-none cursor-not-allowed items-center gap-1.5 rounded-lg bg-[var(--plg-hair)] px-4 py-2 text-[13px] font-semibold text-[var(--plg-muted)]"
+          >
+            <span aria-hidden>🔒</span> Publish to PDP
+          </button>
+        </div>
       </div>
       <div className="mt-3 rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] p-6">
         <div className="hidden grid-cols-[150px_1fr_1fr] gap-5 pb-3.5 md:grid">
@@ -186,15 +201,6 @@ export function TeardownTab() {
                 <div className="mt-3 rounded-md border-l-[3px] border-[var(--plg-error)] bg-[rgba(192,57,43,.08)] p-3 text-[12.5px] leading-relaxed text-[var(--plg-error)]">
                   <b className="mb-1 block text-[var(--plg-error)]">⚠ Held for legal review — not included in this proposal</b>
                   {row.legalFlag}
-                </div>
-              )}
-              {row.tags.length > 0 && (
-                <div className="mt-2.5 flex flex-wrap gap-1.5">
-                  {row.tags.map((tag) => (
-                    <span key={tag} className="rounded-full bg-[rgba(90,175,254,.14)] px-2.5 py-1 text-[11px] text-[var(--plg-secondary)]">
-                      {tag}
-                    </span>
-                  ))}
                 </div>
               )}
             </div>
@@ -248,9 +254,11 @@ export function TeardownTab() {
 
       <p className="mt-4.5 text-[12.5px] text-[var(--plg-muted)]">
         Diagnosis reuses the same category shopper prompts scored above, plus the ASIN&rsquo;s
-        on-page chips and customer Q&amp;A. Basic covers 1 ASIN; Pro covers up to 10, refreshed
+        on-page chips and customer Q&amp;A. Free covers 1 ASIN; Pro covers up to 10, refreshed
         monthly.
       </p>
+
+      {knowledgeOpen && <KnowledgeSpaceModal onClose={() => setKnowledgeOpen(false)} />}
     </div>
   );
 }

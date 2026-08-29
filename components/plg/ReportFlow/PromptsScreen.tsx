@@ -76,7 +76,7 @@ export function PromptsScreen({
         <div className="mb-2.5 flex justify-between text-[12.5px] text-[var(--plg-muted)]">
           <span>
             <b className="text-[var(--plg-ink)]">{totalSelected}</b> of {prompts.length} prompts
-            selected
+            selected — click any checkbox to add or remove one
           </span>
           <span>~10&ndash;15 min once generated</span>
         </div>
@@ -95,11 +95,10 @@ export function PromptsScreen({
 
           <div className="max-h-[420px] divide-y divide-[var(--plg-hair)] overflow-y-auto">
             {prompts.map((p) => (
-              <div
+              <label
                 key={p.id}
                 className={cn(
-                  "group flex items-start gap-3 px-4 py-3 transition hover:bg-[var(--plg-surface-2)]",
-                  !p.checked && "opacity-45",
+                  "group flex cursor-pointer items-start gap-3 px-4 py-3 transition hover:bg-[var(--plg-surface-2)]",
                   p.source === "custom" && "border-l-2 border-[var(--plg-accent)] bg-[rgba(90,175,254,.06)]"
                 )}
               >
@@ -107,9 +106,16 @@ export function PromptsScreen({
                   type="checkbox"
                   checked={p.checked}
                   onChange={() => toggleChecked(p.id)}
-                  className="mt-0.5 h-[15px] w-[15px] flex-none cursor-pointer accent-[var(--plg-indigo)]"
+                  className="mt-0.5 h-[17px] w-[17px] flex-none cursor-pointer accent-[var(--plg-indigo)]"
                 />
-                <div className="flex-1 text-[13.5px] leading-relaxed text-[var(--plg-ink)]">{p.text}</div>
+                <div
+                  className={cn(
+                    "flex-1 text-[13.5px] leading-relaxed",
+                    p.checked ? "text-[var(--plg-ink)]" : "text-[var(--plg-muted)]"
+                  )}
+                >
+                  {p.text}
+                </div>
                 <div className="flex w-[150px] flex-none flex-wrap items-center gap-1">
                   {p.topic ? (
                     <span className="inline-flex items-center rounded-full border border-[var(--plg-hair)] bg-[var(--plg-paper)] px-2.5 py-1 text-[11px] font-medium text-[var(--plg-text2)]">
@@ -125,7 +131,11 @@ export function PromptsScreen({
                 <div className="w-6 flex-none text-right">
                   {p.source === "custom" && (
                     <button
-                      onClick={() => removePrompt(p.id)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removePrompt(p.id);
+                      }}
                       title="Remove"
                       className="text-[13px] text-[var(--plg-muted)] opacity-0 transition hover:text-[var(--plg-error)] group-hover:opacity-100"
                     >
@@ -133,7 +143,7 @@ export function PromptsScreen({
                     </button>
                   )}
                 </div>
-              </div>
+              </label>
             ))}
           </div>
         </div>

@@ -2,9 +2,9 @@
 
 const TIERS = [
   {
-    key: "basic",
-    name: "Basic",
-    price: "Free",
+    key: "free",
+    name: "Free",
+    price: "$0",
     cadence: "this report",
     tagline: "What you're looking at right now.",
     highlight: false,
@@ -33,23 +33,23 @@ const TIERS = [
   },
 ] as const;
 
-const FEATURES: { label: string; basic: string; pro: string; enterprise: string }[] = [
-  { label: "Metrics", basic: "AI Visibility + AI Rank", pro: "+ trend over time", enterprise: "+ closed-loop lift" },
-  { label: "Topics", basic: "5 pre-filled, up to 10", pro: "up to 10+", enterprise: "Scoped to catalog" },
-  { label: "Prompts", basic: "Editable, ≤25/topic", pro: "≤25+/topic", enterprise: "Scoped to catalog" },
+const FEATURES: { label: string; free: string; pro: string; enterprise: string }[] = [
   {
-    label: "Topic/prompt source",
-    basic: "Curated bank + live generation",
-    pro: "Same bank",
-    enterprise: "Bank + full generation",
+    label: "Metrics",
+    free: "AI Visibility + AI Rank",
+    pro: "AI Visibility + AI Rank + trend over time",
+    enterprise: "+ closed-loop lift",
   },
-  { label: "Metrics refresh", basic: "Point-in-time snapshot", pro: "Weekly", enterprise: "Continuous" },
-  { label: "ASIN Optimization", basic: "1 ASIN", pro: "Up to 10 SKUs, monthly", enterprise: "Full catalog" },
-  { label: "Act / publish / measure", basic: "No", pro: "No", enterprise: "Yes — full Content Agent" },
-  { label: "Free 45-day pilot", basic: "Always offered", pro: "Always offered", enterprise: "The on-ramp" },
+  { label: "Topics", free: "Up to 5", pro: "Up to 10 max", enterprise: "Scoped to catalog" },
+  { label: "Prompts", free: "Up to 15 total, 3 custom", pro: "Up to 50 max", enterprise: "Scoped to catalog" },
+  { label: "Report refresh", free: "Never — one-time snapshot", pro: "Weekly", enterprise: "Continuous" },
+  { label: "ASIN Optimization", free: "1 ASIN", pro: "Up to 10 SKUs, monthly", enterprise: "Full catalog" },
+  { label: "Publish content to PDP", free: "No", pro: "No", enterprise: "Yes — full Content Agent" },
+  { label: "Measure impact of content changes", free: "No", pro: "No", enterprise: "Yes — closed-loop lift" },
+  { label: "Image and A+ content optimization", free: "No", pro: "No", enterprise: "Yes — full Content Agent" },
 ];
 
-// Pricing tab: the three-tier breakdown (Basic/Pro/Enterprise) and what upgrading actually
+// Pricing tab: the three-tier breakdown (Free/Pro/Enterprise) and what upgrading actually
 // changes, so a champion can size the ask without leaving the report.
 export function PricingTab({
   onPilotClick,
@@ -106,7 +106,7 @@ export function PricingTab({
                   <span className="mt-1.5 h-1.5 w-1.5 flex-none rounded-full bg-[var(--plg-indigo)]" />
                   <span>
                     <b className="text-[var(--plg-ink)]">{f.label}:</b>{" "}
-                    {t.key === "basic" ? f.basic : t.key === "pro" ? f.pro : f.enterprise}
+                    {t.key === "free" ? f.free : t.key === "pro" ? f.pro : f.enterprise}
                   </span>
                 </li>
               ))}

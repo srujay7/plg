@@ -105,7 +105,7 @@ export type CuratedPrompt = {
   edited: boolean;
 };
 
-const DEFAULT_CHECKED_PROMPTS = 5;
+const DEFAULT_CHECKED_PROMPTS = 10;
 export const TOTAL_PROMPT_CAP = 15;
 export const MAX_CUSTOM_PROMPTS = 1;
 // Curated/generated prompts stop short of the total cap so there's always room left for the

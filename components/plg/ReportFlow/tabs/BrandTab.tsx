@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { PROMPTS, LEADERBOARD, META } from "@/data/plgReportData";
 import { aggregate } from "@/lib/plg";
+import { RefreshReportButton } from "@/components/plg/shared/RefreshReportButton";
 
 function InfoDot({ anchor }: { anchor: string }) {
   return (
@@ -52,14 +53,17 @@ export function BrandTab() {
 
   return (
     <div className="mx-auto max-w-[1120px] px-7 py-12">
-      <div className="max-w-[64ch]">
-        <h2 className="text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
-          {META.brand} visibility on {META.assistant}
-        </h2>
-        <p className="mt-3 text-base text-[var(--plg-text2)]">
-          The brand&rsquo;s overall standing across every tracked shopper question, rolled up to
-          a single view.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="max-w-[64ch]">
+          <h2 className="text-[clamp(23px,3vw,30px)] font-semibold tracking-tight text-[var(--plg-ink)]">
+            {META.brand} visibility on {META.assistant}
+          </h2>
+          <p className="mt-3 text-base text-[var(--plg-text2)]">
+            The brand&rsquo;s overall standing across every tracked shopper question, rolled up to
+            a single view.
+          </p>
+        </div>
+        <RefreshReportButton />
       </div>
 
       <h3 className="mt-8 text-[19px] font-semibold text-[var(--plg-ink)]">Brand Visibility Breakdown</h3>
