@@ -59,7 +59,9 @@ export function SignupFlow() {
   const [resent, setResent] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [brand, setBrand] = useState("");
-  const [retailer, setRetailer] = useState(RETAILER_OPTIONS[0].value);
+  const [retailer, setRetailer] = useState<(typeof RETAILER_OPTIONS)[number]["value"]>(
+    RETAILER_OPTIONS[0].value
+  );
   const [description, setDescription] = useState("");
   const [asin, setAsin] = useState("");
   const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -239,7 +241,9 @@ export function SignupFlow() {
                 </label>
                 <select
                   value={retailer}
-                  onChange={(e) => setRetailer(e.target.value)}
+                  onChange={(e) =>
+                    setRetailer(e.target.value as (typeof RETAILER_OPTIONS)[number]["value"])
+                  }
                   className="w-full rounded-[6px] border-[1.5px] border-[var(--plg-hair)] bg-[var(--plg-surface)] px-3.5 py-2.5 text-sm text-[var(--plg-body)] outline-none focus:border-[var(--plg-secondary)] focus:shadow-[0_0_0_3px_rgba(90,175,254,0.25)]"
                 >
                   {RETAILER_OPTIONS.map((r) => (
