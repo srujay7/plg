@@ -4,7 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { PrimaryButton } from "@/components/plg/shared/Buttons";
 import { CurationMasthead } from "@/components/plg/ReportFlow/CurationMasthead";
-import { MAX_CUSTOM_PROMPTS, TOTAL_PROMPT_CAP, type CuratedPrompt } from "@/lib/plg";
+import { MAX_CUSTOM_PROMPTS, SELECTION_CAP, type CuratedPrompt } from "@/lib/plg";
 
 const PROMPT_CAP_PER_TOPIC = 25;
 
@@ -27,8 +27,9 @@ export function PromptsScreen({
   const [addInput, setAddInput] = useState("");
 
   const totalSelected = prompts.filter((p) => p.checked).length;
+  const atSelectionCap = totalSelected >= SELECTION_CAP;
   const customPromptCount = prompts.filter((p) => p.source === "custom").length;
-  const canAddCustom = customPromptCount < MAX_CUSTOM_PROMPTS && prompts.length < TOTAL_PROMPT_CAP;
+  const canAddCustom = customPromptCount < MAX_CUSTOM_PROMPTS;
 
   const perTopicCounts = prompts.reduce<Record<string, number>>((acc, p) => {
     if (p.topic) acc[p.topic] = (acc[p.topic] || 0) + 1;
@@ -36,7 +37,13 @@ export function PromptsScreen({
   }, {});
 
   function toggleChecked(id: number) {
-    onChangePrompts(prompts.map((p) => (p.id === id ? { ...p, checked: !p.checked } : p)));
+    onChangePrompts(
+      prompts.map((p) => {
+        if (p.id !== id) return p;
+        if (!p.checked && atSelectionCap) return p;
+        return { ...p, checked: !p.checked };
+      })
+    );
   }
   function removePrompt(id: number) {
     onChangePrompts(prompts.filter((p) => p.id !== id));
@@ -47,7 +54,15 @@ export function PromptsScreen({
     const nextId = Math.max(0, ...prompts.map((p) => p.id)) + 1;
     onChangePrompts([
       ...prompts,
-      { id: nextId, topic: null, text: val, checked: true, source: "custom", edited: false },
+      {
+        id: nextId,
+        topic: null,
+        text: val,
+        checked: !atSelectionCap,
+        source: "custom",
+        edited: false,
+        intent: "Custom",
+      },
     ]);
     setAddInput("");
   }
@@ -69,16 +84,17 @@ export function PromptsScreen({
         <h1 className="mb-2.5 text-[25px] font-bold text-[var(--plg-ink)]">Review your prompts</h1>
         <p className="mb-5.5 max-w-[64ch] text-[14.5px] leading-relaxed text-[var(--plg-text2)]">
           These are the shopper questions we&rsquo;ll ask Alexa AI. One list, across all your
-          topics, capped at {TOTAL_PROMPT_CAP} — you can add one prompt of your own, even before
-          it has a topic.
+          topics — pick up to {SELECTION_CAP} — you can also add one prompt of your own, even
+          before it has a topic.
         </p>
 
         <div className="mb-2.5 flex justify-between text-[12.5px] text-[var(--plg-muted)]">
           <span>
-            <b className="text-[var(--plg-ink)]">{totalSelected}</b> of {prompts.length} prompts
-            selected — click any checkbox to add or remove one
+            <b className="text-[var(--plg-ink)]">{totalSelected}</b> of {SELECTION_CAP} selected
+            &middot; {prompts.length} prompts to choose from — click any checkbox to add or remove
+            one
           </span>
-          <span>~10&ndash;15 min once generated</span>
+          <span>{atSelectionCap ? <b className="text-[var(--plg-error)]">Limit reached</b> : "~10–15 min once generated"}</span>
         </div>
 
         <div className="overflow-hidden rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-surface)]">
@@ -87,7 +103,10 @@ export function PromptsScreen({
             <span className="flex-1 text-[10.5px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
               Shopper prompt
             </span>
-            <span className="w-[150px] flex-none text-[10.5px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
+            <span className="w-[130px] flex-none text-[10.5px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
+              COSMO intent
+            </span>
+            <span className="w-[130px] flex-none text-[10.5px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
               Topic
             </span>
             <span className="w-6 flex-none" />
@@ -105,8 +124,9 @@ export function PromptsScreen({
                 <input
                   type="checkbox"
                   checked={p.checked}
+                  disabled={!p.checked && atSelectionCap}
                   onChange={() => toggleChecked(p.id)}
-                  className="mt-0.5 h-[17px] w-[17px] flex-none cursor-pointer accent-[var(--plg-indigo)]"
+                  className="mt-0.5 h-[17px] w-[17px] flex-none cursor-pointer accent-[var(--plg-indigo)] disabled:cursor-not-allowed disabled:opacity-40"
                 />
                 <div
                   className={cn(
@@ -116,7 +136,12 @@ export function PromptsScreen({
                 >
                   {p.text}
                 </div>
-                <div className="flex w-[150px] flex-none flex-wrap items-center gap-1">
+                <div className="w-[130px] flex-none">
+                  <span className="inline-flex items-center rounded-full border border-[rgba(90,175,254,.4)] bg-[rgba(90,175,254,.1)] px-2.5 py-1 text-[11px] font-medium text-[var(--plg-indigo)]">
+                    {p.intent}
+                  </span>
+                </div>
+                <div className="flex w-[130px] flex-none flex-wrap items-center gap-1">
                   {p.topic ? (
                     <span className="inline-flex items-center rounded-full border border-[var(--plg-hair)] bg-[var(--plg-paper)] px-2.5 py-1 text-[11px] font-medium text-[var(--plg-text2)]">
                       {p.topic}
@@ -151,10 +176,8 @@ export function PromptsScreen({
         <div className="mt-3.5 text-[12.5px] text-[var(--plg-muted)]">
           {canAddCustom ? (
             <>You get <b className="text-[var(--plg-ink)]">1 free prompt</b> to add your own.</>
-          ) : customPromptCount >= MAX_CUSTOM_PROMPTS ? (
-            "You've used your free prompt — delete it below to add a different one."
           ) : (
-            `You've reached the ${TOTAL_PROMPT_CAP}-prompt limit.`
+            "You've used your free prompt — delete it below to add a different one."
           )}
         </div>
         <div className="mt-1.5 flex gap-2">

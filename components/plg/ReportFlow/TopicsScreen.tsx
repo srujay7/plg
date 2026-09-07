@@ -6,7 +6,7 @@ import { PrimaryButton } from "@/components/plg/shared/Buttons";
 import { CurationMasthead } from "@/components/plg/ReportFlow/CurationMasthead";
 import { OB_PREFILLED_TOPICS, OB_MORE_TOPICS } from "@/data/plgReportData";
 
-const TOPIC_CAP = 10;
+const TOPIC_CAP = 5;
 const VISIBLE_CANDIDATES = 5;
 
 // Screen 1 of 2 inside the product (PLG-03, Step 4): pre-filled + candidate topics, custom

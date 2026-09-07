@@ -2,7 +2,7 @@
 // Ported from the aeo-plg-visibility-report-dark_3.html prototype's <script> block
 // (aggregate(), pct(), num1(), rnk(), nameList(), fmtDate()).
 
-import { LEADERBOARD, META, type PromptRow } from "@/data/plgReportData";
+import { LEADERBOARD, META, type CosmoIntent, type PromptRow } from "@/data/plgReportData";
 
 export type Aggregate = {
   vis: number;
@@ -103,14 +103,14 @@ export type CuratedPrompt = {
   checked: boolean;
   source: "curated" | "generated" | "custom";
   edited: boolean;
+  intent: CosmoIntent | "Custom";
 };
 
 const DEFAULT_CHECKED_PROMPTS = 10;
-export const TOTAL_PROMPT_CAP = 15;
+// How many prompts the user can have *checked* (selected for the audit) at once — the list
+// itself can hold more than this so there's real choice to curate from (PLG-03, Step 6).
+export const SELECTION_CAP = 15;
 export const MAX_CUSTOM_PROMPTS = 1;
-// Curated/generated prompts stop short of the total cap so there's always room left for the
-// user's own custom prompt(s) without pushing the list past TOTAL_PROMPT_CAP.
-const CURATED_PROMPT_CAP = TOTAL_PROMPT_CAP - MAX_CUSTOM_PROMPTS;
 
 let promptIdCounter = 1;
 export function nextPromptId() {
@@ -126,7 +126,7 @@ export function nextPromptId() {
 export function syncPromptsForTopics(
   existing: CuratedPrompt[],
   selectedTopics: string[],
-  bank: Record<string, string[]>,
+  bank: Record<string, { text: string; intent: CosmoIntent }[]>,
   uncoveredTopics: string[]
 ): CuratedPrompt[] {
   let prompts = existing.filter(
@@ -138,14 +138,13 @@ export function syncPromptsForTopics(
     if (already) return;
     const bankPrompts = bank[topic];
     const isUncovered = uncoveredTopics.includes(topic) || !bankPrompts;
-    const texts = bankPrompts
+    const entries: { text: string; intent: CosmoIntent }[] = bankPrompts
       ? bankPrompts.slice()
       : [
-          `what's a good ${topic.toLowerCase()} option for my dog`,
-          `best rated ${topic.toLowerCase()} on amazon`,
+          { text: `what's a good ${topic.toLowerCase()} option for my dog`, intent: "Specification" },
+          { text: `best rated ${topic.toLowerCase()} on amazon`, intent: "Comparison" },
         ];
-    texts.forEach((t) => {
-      if (prompts.length >= CURATED_PROMPT_CAP) return;
+    entries.forEach(({ text, intent }) => {
       const checked = checkedCount < DEFAULT_CHECKED_PROMPTS;
       if (checked) checkedCount++;
       prompts = [
@@ -153,10 +152,11 @@ export function syncPromptsForTopics(
         {
           id: nextPromptId(),
           topic,
-          text: t,
+          text,
           checked,
           source: isUncovered ? "generated" : "curated",
           edited: false,
+          intent,
         },
       ];
     });

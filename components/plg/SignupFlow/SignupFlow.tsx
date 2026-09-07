@@ -231,9 +231,7 @@ export function SignupFlow() {
                 This powers your one free AI Visibility report.
               </p>
               <PrecisionBanner>
-                <b>Precision pays off.</b> The more specific you are about your brand and what you
-                sell, the better Content Agent understands your business — and the sharper your
-                topics, prompts, and results will be. Vague answers here mean vague results later.
+                The more specific you are, the better your results.
               </PrecisionBanner>
               <div className="mb-4.5">
                 <label className="mb-1.5 block text-[13px] font-semibold text-[var(--plg-ink)]">

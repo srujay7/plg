@@ -97,14 +97,14 @@ export function ReportFlow() {
       {modal === "pilot" && (
         <TalkToSalesModal
           title="Request a free 45-day pilot"
-          body="Sales-assisted in v1 — this captures your request and routes it to the CommerceIQ team. No self-serve pilot start yet."
+          body="Talk to our sales team — fill out this form and our sales executive will get in touch with you."
           onClose={() => setModal(null)}
         />
       )}
       {modal === "upgrade" && (
         <TalkToSalesModal
           title="Talk to sales about Pro"
-          body="No self-serve payment in v1 — every upgrade CTA routes here. Sales raises your account caps once approved."
+          body="Talk to our sales team — fill out this form and our sales executive will get in touch with you."
           onClose={() => setModal(null)}
         />
       )}

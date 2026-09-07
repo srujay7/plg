@@ -141,32 +141,48 @@ export const OB_MORE_TOPICS = [
 // Bank miss -> prompts generated live, not curated (PLG-03a coverage limit).
 export const OB_UNCOVERED_TOPICS = ["Grain-free dog food"];
 
-export const OB_PROMPT_BANK: Record<string, string[]> = {
+// Best-effort tag set standing in for the PRD's "COSMO intent angle" (PLG-03a: cluster ×
+// intent -> topic, e.g. "dry dog food" x WHO = "senior dog food") until the real bank
+// taxonomy ships — Comparison / Occasion / Specification / Money / Outcome, shown as a
+// per-prompt tag so the user can see what shopper angle each prompt represents.
+export type CosmoIntent = "Comparison" | "Occasion" | "Specification" | "Money" | "Outcome";
+
+export const OB_PROMPT_BANK: Record<string, { text: string; intent: CosmoIntent }[]> = {
   "Dry dog food": [
-    "what's a good dry dog food for a medium sized adult dog",
-    "best dry dog food that keeps my dog's coat healthy and shiny",
-    "affordable dry dog food that doesn't skimp on protein",
-    "show me highly rated dry kibble for dogs with allergies",
+    { text: "what's a good dry dog food for a medium sized adult dog", intent: "Specification" },
+    { text: "best dry dog food that keeps my dog's coat healthy and shiny", intent: "Outcome" },
+    { text: "affordable dry dog food that doesn't skimp on protein", intent: "Money" },
+    { text: "show me highly rated dry kibble for dogs with allergies", intent: "Comparison" },
+    { text: "dry dog food for everyday feeding at home", intent: "Occasion" },
+    { text: "top rated dry dog food brands this year", intent: "Comparison" },
   ],
   "Senior dog food": [
-    "best dry dog food for senior dogs with joint support",
-    "what dog food helps aging dogs with mobility and joint pain",
-    "gentle dog food for older dogs with sensitive digestion",
+    { text: "best dry dog food for senior dogs with joint support", intent: "Outcome" },
+    { text: "what dog food helps aging dogs with mobility and joint pain", intent: "Outcome" },
+    { text: "gentle dog food for older dogs with sensitive digestion", intent: "Specification" },
+    { text: "affordable senior dog food that's still high quality", intent: "Money" },
+    { text: "dog food for senior dogs transitioning off puppy food", intent: "Occasion" },
   ],
   "Grain-free dog food": [
-    "grain free dog food for dogs with food sensitivities",
-    "best grain free kibble for dogs with skin allergies",
-    "healthy grain free dog food options for adult dogs",
+    { text: "grain free dog food for dogs with food sensitivities", intent: "Specification" },
+    { text: "best grain free kibble for dogs with skin allergies", intent: "Outcome" },
+    { text: "healthy grain free dog food options for adult dogs", intent: "Specification" },
+    { text: "affordable grain free dog food that won't break the bank", intent: "Money" },
+    { text: "grain free dog food for a dog switching diets", intent: "Occasion" },
   ],
   "Puppy food": [
-    "best puppy food for large breed puppies",
-    "what puppy food helps with healthy brain and eye development",
-    "affordable puppy food for small breed puppies",
+    { text: "best puppy food for large breed puppies", intent: "Specification" },
+    { text: "what puppy food helps with healthy brain and eye development", intent: "Outcome" },
+    { text: "affordable puppy food for small breed puppies", intent: "Money" },
+    { text: "puppy food for a new puppy's first few months", intent: "Occasion" },
+    { text: "top rated puppy food brands recommended by vets", intent: "Comparison" },
   ],
   "Sensitive stomach dog food": [
-    "dog food for dogs with sensitive stomachs and frequent vomiting",
-    "best limited ingredient dog food for food allergies",
-    "gentle dog food that won't upset my dog's stomach",
+    { text: "dog food for dogs with sensitive stomachs and frequent vomiting", intent: "Outcome" },
+    { text: "best limited ingredient dog food for food allergies", intent: "Comparison" },
+    { text: "gentle dog food that won't upset my dog's stomach", intent: "Outcome" },
+    { text: "affordable sensitive stomach dog food options", intent: "Money" },
+    { text: "dog food to try after a stomach upset or vet visit", intent: "Occasion" },
   ],
 };
 
