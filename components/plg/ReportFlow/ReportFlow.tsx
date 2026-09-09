@@ -11,7 +11,6 @@ import { PromptsScreen } from "@/components/plg/ReportFlow/PromptsScreen";
 import { WaitScreen } from "@/components/plg/ReportFlow/WaitScreen";
 import { ReportView } from "@/components/plg/ReportFlow/ReportView";
 import { ReportDataProvider } from "@/components/plg/ReportFlow/ReportDataContext";
-import { DevScenarioToggle } from "@/components/plg/ReportFlow/DevScenarioToggle";
 import { TalkToSalesModal } from "@/components/plg/shared/TalkToSalesModal";
 import {
   META,
@@ -111,8 +110,6 @@ export function ReportFlow() {
             onClose={() => setModal(null)}
           />
         )}
-
-        {screen === "report" && <DevScenarioToggle />}
       </div>
     </ReportDataProvider>
   );
