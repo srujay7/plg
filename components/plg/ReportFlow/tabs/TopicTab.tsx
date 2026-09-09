@@ -1,11 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { PROMPTS, META } from "@/data/plgReportData";
+import { META, TOPIC_COMPETITOR_SCORES } from "@/data/plgReportData";
 import { pct, rnk, topicsFromPrompts, nameList, type TopicAggregate } from "@/lib/plg";
 import { RefreshReportButton } from "@/components/plg/shared/RefreshReportButton";
+import { useReportData } from "@/components/plg/ReportFlow/ReportDataContext";
 
 type SortKey = "label" | "vis" | "sov" | "rank";
+
+// Highest-scoring named competitor for a topic (excludes "You") — reuses the same per-topic
+// scores the Competitors tab's gap table is built from. Falls back to "—" for a topic outside
+// that dataset (e.g. a custom topic the user added during curation).
+function topCompetitorFor(topic: string): string {
+  const scores = TOPIC_COMPETITOR_SCORES[topic];
+  if (!scores) return "—";
+  let top: string | null = null;
+  let topScore = -Infinity;
+  for (const [name, score] of Object.entries(scores)) {
+    if (name === "You") continue;
+    if (score > topScore) {
+      topScore = score;
+      top = name;
+    }
+  }
+  return top ?? "—";
+}
 
 // "By topic" tab: sortable topic table + headline callouts + PLG-06 competitive stack-up.
 // Ported from renderTopics()/renderStackup() + the topic-narrative IIFE.
@@ -13,6 +32,7 @@ export function TopicTab() {
   const [sortKey, setSortKey] = useState<SortKey>("sov");
   const [sortDir, setSortDir] = useState<1 | -1>(-1);
 
+  const { prompts: PROMPTS } = useReportData();
   const topics = topicsFromPrompts(PROMPTS);
 
   const rows = [...topics].sort((a, b) => {
@@ -58,7 +78,7 @@ export function TopicTab() {
         )}% share, ${strongNote}${secondTxt}. Its softest appearing theme is ${weak.label} (${weak.sov.toFixed(
           1
         )}% share, position ${rnk(weak.rank)}).${missTxt} Those are where content optimized for ${META.assistant} moves the most share.`
-      : "";
+      : `${META.brand} doesn't currently surface for any tracked topic on ${META.assistant} — whole-catalog whitespace rather than a single weak spot. Closing that starts with the highest-intent topics you're tracking.`;
 
   return (
     <div className="mx-auto max-w-[1120px] px-7 py-12">
@@ -77,7 +97,7 @@ export function TopicTab() {
       </div>
 
       <div className="mt-5.5 overflow-hidden rounded-xl border border-[var(--plg-hair)]">
-        <div className="grid grid-cols-1 gap-4.5 bg-[var(--plg-surface)] px-5.5 py-3.5 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="grid grid-cols-1 gap-4.5 bg-[var(--plg-surface)] px-5.5 py-3.5 md:grid-cols-[1.2fr_0.9fr_0.7fr_1fr]">
           {(
             [
               ["label", "Topic"],
@@ -94,11 +114,14 @@ export function TopicTab() {
               {arrow(key)}
             </button>
           ))}
+          <span className="text-left text-[11.5px] font-semibold uppercase tracking-[.08em] text-[var(--plg-muted)]">
+            Top competitor
+          </span>
         </div>
         {rows.map((t) => (
           <div
             key={t.label}
-            className="grid grid-cols-1 gap-4.5 border-t border-[var(--plg-hair)] px-5.5 py-4.5 md:grid-cols-[1.4fr_1fr_1fr] md:items-center"
+            className="grid grid-cols-1 gap-4.5 border-t border-[var(--plg-hair)] px-5.5 py-4.5 md:grid-cols-[1.2fr_0.9fr_0.7fr_1fr] md:items-center"
           >
             <div className="text-[15px] font-semibold text-[var(--plg-ink)]">{t.label}</div>
             <div className="flex items-center gap-2">
@@ -116,6 +139,9 @@ export function TopicTab() {
               <span className="font-mono text-[20px] font-medium text-[var(--plg-ink)]">
                 {t.rank == null ? "—" : t.rank.toFixed(1)}
               </span>
+            </div>
+            <div className="text-left text-[13.5px] font-medium text-[var(--plg-text2)]">
+              {topCompetitorFor(t.label)}
             </div>
           </div>
         ))}

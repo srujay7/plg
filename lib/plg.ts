@@ -23,6 +23,27 @@ export function aggregate(rows: PromptRow[]): Aggregate {
   return { vis, sov, rank, total, shown: present.length };
 }
 
+// Dev-only report scenario toggle (local build aid): lets you preview how the report's copy
+// and layout hold up when the brand doesn't rank at all, without needing a real audit run
+// that produces that outcome. "in-top-10" is the real sample data as authored; "outside-top-10"
+// zeroes every prompt's visibility/rank and swaps the brand out of the leaderboard.
+export type Scenario = "in-top-10" | "outside-top-10";
+
+export function applyScenario(
+  prompts: PromptRow[],
+  leaderboard: [string, number][],
+  brand: string,
+  scenario: Scenario
+): { prompts: PromptRow[]; leaderboard: [string, number][] } {
+  if (scenario === "in-top-10") return { prompts, leaderboard };
+  return {
+    prompts: prompts.map((p) => ({ ...p, vis: 0, sov: 0, rank: null })),
+    leaderboard: leaderboard.map(([name, score]): [string, number] =>
+      name === brand ? ["Diamond Naturals", score] : [name, score]
+    ),
+  };
+}
+
 export type Citation = { rank: number; name: string; isBrand: boolean };
 
 /**

@@ -10,6 +10,8 @@ import { GeneratingPromptsScreen } from "@/components/plg/ReportFlow/GeneratingP
 import { PromptsScreen } from "@/components/plg/ReportFlow/PromptsScreen";
 import { WaitScreen } from "@/components/plg/ReportFlow/WaitScreen";
 import { ReportView } from "@/components/plg/ReportFlow/ReportView";
+import { ReportDataProvider } from "@/components/plg/ReportFlow/ReportDataContext";
+import { DevScenarioToggle } from "@/components/plg/ReportFlow/DevScenarioToggle";
 import { TalkToSalesModal } from "@/components/plg/shared/TalkToSalesModal";
 import {
   META,
@@ -48,66 +50,70 @@ export function ReportFlow() {
   }
 
   return (
-    <div>
-      <Topbar
-        screen={screen}
-        brand={brand}
-        activeTab={tab}
-        onTabChange={setTab}
-        onPilotClick={() => setModal("pilot")}
-      />
-
-      {screen === "research" && (
-        <ResearchScreen brand={brand} onDone={() => setScreen("topics")} />
-      )}
-
-      {screen === "topics" && (
-        <TopicsScreen
+    <ReportDataProvider>
+      <div>
+        <Topbar
+          screen={screen}
           brand={brand}
-          selectedTopics={selectedTopics}
-          onChangeSelected={setSelectedTopics}
-          onContinue={() => setScreen("generatingPrompts")}
-        />
-      )}
-
-      {screen === "generatingPrompts" && (
-        <GeneratingPromptsScreen onDone={finishGeneratingPrompts} />
-      )}
-
-      {screen === "prompts" && (
-        <PromptsScreen
-          brand={brand}
-          prompts={prompts}
-          onChangePrompts={setPrompts}
-          onBack={() => setScreen("topics")}
-          onGenerate={() => setScreen("wait")}
-        />
-      )}
-
-      {screen === "wait" && <WaitScreen onDone={() => setScreen("report")} />}
-
-      {screen === "report" && (
-        <ReportView
-          tab={tab}
+          activeTab={tab}
+          onTabChange={setTab}
           onPilotClick={() => setModal("pilot")}
-          onUpgradeClick={() => setModal("upgrade")}
         />
-      )}
 
-      {modal === "pilot" && (
-        <TalkToSalesModal
-          title="Request a free 45-day pilot"
-          body="Talk to our sales team — fill out this form and our sales executive will get in touch with you."
-          onClose={() => setModal(null)}
-        />
-      )}
-      {modal === "upgrade" && (
-        <TalkToSalesModal
-          title="Talk to sales about Pro"
-          body="Talk to our sales team — fill out this form and our sales executive will get in touch with you."
-          onClose={() => setModal(null)}
-        />
-      )}
-    </div>
+        {screen === "research" && (
+          <ResearchScreen brand={brand} onDone={() => setScreen("topics")} />
+        )}
+
+        {screen === "topics" && (
+          <TopicsScreen
+            brand={brand}
+            selectedTopics={selectedTopics}
+            onChangeSelected={setSelectedTopics}
+            onContinue={() => setScreen("generatingPrompts")}
+          />
+        )}
+
+        {screen === "generatingPrompts" && (
+          <GeneratingPromptsScreen onDone={finishGeneratingPrompts} />
+        )}
+
+        {screen === "prompts" && (
+          <PromptsScreen
+            brand={brand}
+            prompts={prompts}
+            onChangePrompts={setPrompts}
+            onBack={() => setScreen("topics")}
+            onGenerate={() => setScreen("wait")}
+          />
+        )}
+
+        {screen === "wait" && <WaitScreen onDone={() => setScreen("report")} />}
+
+        {screen === "report" && (
+          <ReportView
+            tab={tab}
+            onPilotClick={() => setModal("pilot")}
+            onUpgradeClick={() => setModal("upgrade")}
+          />
+        )}
+
+        {modal === "pilot" && (
+          <TalkToSalesModal
+            title="Request a free 45-day pilot"
+            body="Talk to our sales team — fill out this form and our sales executive will get in touch with you."
+            onClose={() => setModal(null)}
+          />
+        )}
+        {modal === "upgrade" && (
+          <TalkToSalesModal
+            title="Talk to sales about Pro"
+            body="Talk to our sales team — fill out this form and our sales executive will get in touch with you."
+            onClose={() => setModal(null)}
+          />
+        )}
+
+        {screen === "report" && <DevScenarioToggle />}
+      </div>
+    </ReportDataProvider>
   );
 }

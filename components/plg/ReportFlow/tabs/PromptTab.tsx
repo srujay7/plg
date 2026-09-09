@@ -1,9 +1,10 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { PROMPTS, META, type PromptRow } from "@/data/plgReportData";
+import { META, type PromptRow } from "@/data/plgReportData";
 import { citationsForPrompt, fmtDate, mockAssistantResponse, pct } from "@/lib/plg";
 import { RefreshReportButton } from "@/components/plg/shared/RefreshReportButton";
+import { useReportData } from "@/components/plg/ReportFlow/ReportDataContext";
 
 type SortKey = "q" | "topic" | "vis" | "rank";
 
@@ -22,6 +23,7 @@ export function PromptTab() {
     setShowFullResponse(false);
   }
 
+  const { prompts: PROMPTS } = useReportData();
   const rows = PROMPTS.slice().sort((a, b) => {
     if (sortKey === "q" || sortKey === "topic") {
       return a[sortKey].localeCompare(b[sortKey]) * sortDir;
@@ -247,11 +249,17 @@ export function PromptTab() {
             Appears in the answer but lands in the back half of the list.
           </p>
           <ul className="mt-3.5 list-none p-0">
-            {low.map((p) => (
-              <li key={p.q} className="border-t border-[var(--plg-hair)] py-2.5 text-sm text-[var(--plg-text2)] first:border-t-0">
-                {p.q}
+            {low.length === 0 ? (
+              <li className="py-2.5 text-sm text-[var(--plg-text2)]">
+                Nothing to show — the brand doesn&rsquo;t appear anywhere it could rank low.
               </li>
-            ))}
+            ) : (
+              low.map((p) => (
+                <li key={p.q} className="border-t border-[var(--plg-hair)] py-2.5 text-sm text-[var(--plg-text2)] first:border-t-0">
+                  {p.q}
+                </li>
+              ))
+            )}
           </ul>
         </div>
         <div className="rounded-xl border border-[var(--plg-hair)] bg-gradient-to-b from-[rgba(90,175,254,.10)] to-[var(--plg-paper)] p-6">
@@ -260,11 +268,17 @@ export function PromptTab() {
           </h3>
           <p className="mt-1.5 text-sm text-[var(--plg-text2)]">Questions where the brand already leads the answer.</p>
           <ul className="mt-3.5 list-none p-0">
-            {wins.map((p) => (
-              <li key={p.q} className="border-t border-[var(--plg-hair)] py-2.5 text-sm text-[var(--plg-text2)] first:border-t-0">
-                {p.q}
+            {wins.length === 0 ? (
+              <li className="py-2.5 text-sm text-[var(--plg-text2)]">
+                No wins yet — the brand isn&rsquo;t leading the answer on any tracked question.
               </li>
-            ))}
+            ) : (
+              wins.map((p) => (
+                <li key={p.q} className="border-t border-[var(--plg-hair)] py-2.5 text-sm text-[var(--plg-text2)] first:border-t-0">
+                  {p.q}
+                </li>
+              ))
+            )}
           </ul>
         </div>
       </div>

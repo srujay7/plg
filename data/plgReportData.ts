@@ -190,102 +190,106 @@ export const OB_PROMPT_BANK: Record<string, { text: string; intent: CosmoIntent 
 
 export const TEARDOWN = {
   asin: "B08XJQZ41P",
-  product: "Acme Pet Co. Dry Dog Food, 30 lb Bag",
-  seoScore: 58,
+  brand: "Acme Pet Co.",
+  category: "Dry dog food",
+  product: "Acme Pet Co. Adult Dry Dog Food, Chicken & Rice Recipe, Real Chicken is the #1 Ingredient, 30 lb Bag",
+  seoScore: 24,
   aeoScore: 41,
-  rows: [
+  scrapedOn: "5 Sep 2026",
+  slotsUsed: 1,
+  slotsTotal: 10,
+  changesProposed: 8,
+
+  title: {
+    current: "Acme Pet Co. Adult Dry Dog Food, Chicken & Rice Recipe, Real Chicken is the #1 Ingredient, 30 lb Bag",
+    currentChars: 100,
+    recommended: "Acme Pet Co. Senior Dry Dog Food, Grain-Free, Chicken & Rice, 30 lb",
+    recommendedChars: 67,
+    cap: 75,
+    why:
+      "over the 75-character cap (Amazon, 27 Jul 2026), so this ASIN risks an automatic Amazon rewrite <b>and cannot show Item Highlights at all</b>. At 67 it keeps brand, product type and the pack size, pulls <b>Senior</b> and <b>Grain-Free</b> forward as the lead differentiators — 2 of the 4 topics scored above where this ASIN has 0% visibility — and hands the ingredient claim down to Item Highlights.",
+  },
+
+  highlights: {
+    recommended:
+      "Grain-free recipe, real chicken still the #1 ingredient · glucosamine and probiotics for joint and digestive support",
+    recommendedChars: 116,
+    cap: 125,
+    why:
+      "new 125-character searchable field launched 27 Jul 2026, displayed only when the title is within cap. Carries the ingredient claim dropped from the title, and answers the \"joint support\" and \"senior\" prompts you're tracking.",
+  },
+
+  bullets: [
     {
-      field: "Title",
-      disposition: "amend" as const,
-      pdp: "Acme Pet Co. Dry Dog Food, 30 lb Bag",
-      aiHtml:
-        "Acme Pet Co. <ins>Senior</ins> Dry Dog Food, <ins>Grain-Free, Chicken &amp; Rice,</ins> 30 lb",
-      why:
-        "\"Senior dog food\" and \"Grain-free dog food\" are 2 of the 4 topics scored above, and this ASIN doesn't currently surface either term — that's a likely driver of the 0% visibility on 2 of the grain-free prompts.",
-      tags: ["Chip: Life Stage — Adult/Senior", "Chip: Special Diet — Grain Free"],
-    },
-    {
-      field: "Description",
-      disposition: "amend" as const,
-      pdp: "Acme Pet Co. Dry Dog Food is made with real chicken as the #1 ingredient and delivers complete, balanced nutrition for adult dogs. Proudly made in the USA.",
-      aiHtml:
-        "Acme Pet Co. <ins>Senior</ins> Dry Dog Food is a <ins>grain-free</ins> recipe made with real chicken as the #1 ingredient, <ins>vet-formulated with glucosamine and probiotics for joint and digestive support</ins>, and delivers complete, balanced nutrition for adult dogs<ins> 7 and up</ins>. Proudly made in the USA.",
-      why: "Same gap as the title, plus \"joint support\" language pulled directly from the senior-food prompts scored above — this ASIN currently has no answer-engine presence on any of them.",
-      tags: [] as string[],
-    },
-    {
-      field: "Bullet 1",
-      disposition: "amend" as const,
-      pdp: "Real chicken is the #1 ingredient",
-      aiHtml: "<ins>Grain-free</ins> — real chicken is <ins>still</ins> the #1 ingredient",
+      current: "Real chicken is the #1 ingredient",
+      recommendedHtml: "Real chicken is <b>still</b> the #1 ingredient — now in a <b>grain-free</b> recipe",
       why: "Preserves the existing, verified claim and layers in the grain-free attribute rather than replacing it.",
-      tags: ["Chip: Special Diet — Grain Free"],
     },
     {
-      field: "Bullet 2",
-      disposition: "amend" as const,
-      pdp: "Complete and balanced nutrition",
-      aiHtml: "<ins>Vet-formulated, </ins>complete and balanced nutrition for adult dogs<ins> 7+</ins>",
-      why: "\"Senior dog food\" is the strongest-performing scored topic (up to 41% share of voice) — this ASIN doesn't mention \"senior\" anywhere today.",
-      tags: ["Chip: Life Stage — Adult/Senior"],
+      current: "Complete and balanced nutrition",
+      recommendedHtml: "<b>Vet-formulated,</b> complete and balanced nutrition for adult dogs <b>7 and up</b>",
+      why:
+        "\"senior dog food\" is the strongest-performing scored topic (up to 41% share of voice) — this ASIN doesn't mention \"senior\" anywhere today.",
     },
     {
-      field: "Bullet 3 · new",
-      disposition: "new" as const,
-      pdp: null,
-      aiHtml: "Supports joint &amp; digestive health with added glucosamine and probiotics",
-      why: "Directly answers the \"joint support\" and \"mobility\" language in the senior-food prompts scored above, where this ASIN currently has no answer-engine presence. Sourced from the category prompts, not an existing PDP chip.",
-      tags: [] as string[],
+      current: "No artificial preservatives",
+      recommendedHtml: "No artificial preservatives, colors, or flavors — <b>just real ingredients dogs recognize</b>",
+      why: "Reinforces an existing verified claim with the phrasing shoppers actually search for.",
     },
     {
-      field: "Bullet candidate",
-      disposition: "deferred" as const,
-      pdp: "Made in the USA",
-      aiHtml: "<del>Made in the USA in a human-grade certified facility</del>",
-      why: null,
-      legalFlag:
-        "\"Human-grade\" is an FDA-scrutinized claim in pet food. The on-page Q&A references a \"human-grade certified facility,\" but Content Agent won't surface regulator-sensitive claims without a compliance sign-off — flagging this for your team to review separately instead of auto-proposing it.",
-      tags: [] as string[],
+      current: "Supports healthy skin and coat",
+      recommendedHtml:
+        "Supports healthy skin and coat with omega fatty acids, plus <b>glucosamine and probiotics for joint and digestive support</b>",
+      why:
+        "Directly answers the \"joint support\" and \"mobility\" language in the senior-food prompts scored above, where this ASIN currently has no answer-engine presence.",
+    },
+    {
+      current: "Proudly made in the USA",
+      recommendedHtml: "Proudly made in the USA in a <b>quality-checked facility</b>",
+      why: "Keeps the existing, verified claim and tightens the phrasing — no new attribute added here.",
     },
   ],
+
+  description: {
+    current:
+      "Acme Pet Co. Dry Dog Food is made with real chicken as the #1 ingredient and delivers complete, balanced nutrition for adult dogs. Proudly made in the USA.",
+    recommendedHtml:
+      "Acme Pet Co. <b>Senior</b> Dry Dog Food is a <b>grain-free</b> recipe made with real chicken as the #1 ingredient, <b>vet-formulated with glucosamine and probiotics for joint and digestive support</b>, and delivers complete, balanced nutrition for adult dogs<b> 7 and up</b>. Proudly made in the USA.",
+    why:
+      "integrates the same senior, grain-free, and joint-support attributes added above so the description doesn't contradict the title and bullets — this ASIN currently has no answer-engine presence on the senior-food or grain-free prompts scored above.",
+  },
+
   qa: [
     {
       question: "Is this good for senior dogs?",
       answer: "\"Yes — appropriate for adult and senior maintenance.\"",
       status: "closed" as const,
-      note: "added to title, description & bullet 2",
+      note: "added to title, highlights & bullet 2",
     },
     {
       question: "Does this contain grains?",
       answer: "\"No — this is a grain-free formula.\"",
       status: "closed" as const,
-      note: "added to title, description & bullet 1",
+      note: "added to title & highlights",
     },
     {
       question: "Does this help with joint mobility?",
       answer: "\"Contains glucosamine and probiotics for joint and digestive support.\"",
       status: "closed" as const,
-      note: "added as net-new bullet 3",
+      note: "added to Item Highlights",
     },
     {
       question: "Is this suitable for dogs with chicken allergies?",
       answer: "\"Not recommended — chicken is the primary protein.\"",
       status: "notadded" as const,
-      note: "would contradict the existing chicken-first claim",
-    },
-    {
-      question: "Is this made with human-grade ingredients?",
-      answer: "\"Manufactured in a human-grade certified facility.\"",
-      status: "deferred" as const,
-      note: "regulator-sensitive claim, held for legal review",
+      note: "would contradict on-page answer",
     },
   ],
-  rules: [
-    "Preserve substantiated claims — never remove what's already verified on the PDP.",
-    "Only add attributes backed by an on-page chip, customer Q&A, or spec — no fabrication.",
-    "Match language to how shoppers actually ask, using the category prompts scored above — not generic marketing copy.",
-    "Flag anything regulator-sensitive (health, medical, or \"human-grade\"-style claims) for legal review instead of publishing it automatically.",
-  ],
+
+  linkedPrompts: {
+    text:
+      "This SKU has no presence on 3 prompts in <b>senior dog food</b> and <b>grain-free dog food</b> — both topics scored above. The changes above target exactly that language.",
+  },
 };
 
 // ---------- sign-up flow: testimonial carousel ----------

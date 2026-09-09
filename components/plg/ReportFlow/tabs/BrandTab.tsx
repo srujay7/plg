@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { PROMPTS, LEADERBOARD, META } from "@/data/plgReportData";
-import { aggregate } from "@/lib/plg";
+import { META } from "@/data/plgReportData";
+import { aggregate, rnk } from "@/lib/plg";
 import { RefreshReportButton } from "@/components/plg/shared/RefreshReportButton";
+import { useReportData } from "@/components/plg/ReportFlow/ReportDataContext";
 
 function InfoDot({ anchor }: { anchor: string }) {
   return (
@@ -20,6 +21,7 @@ function InfoDot({ anchor }: { anchor: string }) {
 // "By brand" tab: KPI trio + narrative read + PLG-06b Alexa AI top-10 leaderboard.
 // Ported from the mock's IIFEs building #kpis / #readpts / #brand-takeaway / #leaderboard.
 export function BrandTab() {
+  const { prompts: PROMPTS, leaderboard: LEADERBOARD } = useReportData();
   const brand = aggregate(PROMPTS);
   const total = PROMPTS.length;
   const shown = brand.shown;
@@ -97,7 +99,7 @@ export function BrandTab() {
             <InfoDot anchor="ai-rank" />
           </div>
           <div className="mt-3 text-[44px] font-bold leading-none tracking-tight text-[var(--plg-ink)]">
-            #{rankHi || "—"}
+            {rankHi ? `#${rankHi}` : "—"}
           </div>
           <div className="mt-3 text-[13px] text-[var(--plg-text2)]">
             A single simplification of weighted share of voice and best position — where{" "}
@@ -204,7 +206,7 @@ export function BrandTab() {
             <span className="mt-1.5 h-2 w-2 flex-none rounded-full" style={{ background: "var(--plg-secondary)" }} />
             <span>
               <b className="text-[var(--plg-ink)]">{posLab} placement.</b> An average best
-              position of {brand.rank?.toFixed(2)} means {META.brand} tends to land {posD}.
+              position of {rnk(brand.rank)} means {META.brand} tends to land {posD}.
             </span>
           </li>
         </ul>

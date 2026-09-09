@@ -300,7 +300,7 @@ export function SignupFlow() {
                 disabled={!brand || !asin}
                 onClick={handleContinueToReportSetup}
               >
-                Continue to Content Agent
+                Continue to Report
               </PrimaryButton>
               <div className="mt-4.5 text-center text-xs leading-relaxed text-[var(--plg-muted)]">
                 Next, you&rsquo;ll confirm your topics and shopper prompts inside Content Agent —
