@@ -1,12 +1,94 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { META, type PromptRow } from "@/data/plgReportData";
 import { citationsForPrompt, fmtDate, mockAssistantResponse, pct } from "@/lib/plg";
 import { RefreshReportButton } from "@/components/plg/shared/RefreshReportButton";
 import { useReportData } from "@/components/plg/ReportFlow/ReportDataContext";
 
 type SortKey = "q" | "topic" | "vis" | "rank";
+
+// Prompt drill-down (PLG-03 tab): the assistant's citations + raw response for one shopper
+// question. A modal rather than an inline expanding row — with up to 10 ASINs plus a full
+// response, an inline row grew tall enough to push the rest of the table around; a fixed-size
+// modal with its own scroll region for the ASIN list keeps it compact regardless of prompt.
+function PromptDetailModal({ prompt, onClose }: { prompt: PromptRow; onClose: () => void }) {
+  const citations = citationsForPrompt(prompt);
+  const response = mockAssistantResponse(prompt, citations);
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[rgba(4,2,9,.65)] p-4" onClick={onClose}>
+      <div
+        className="flex max-h-[85vh] w-[440px] flex-col rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)] shadow-[0_8px_24px_rgba(33,2,53,.1)]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-3 border-b border-[var(--plg-hair)] px-5 py-4">
+          <div className="min-w-0">
+            <div className="text-[14.5px] font-bold text-[var(--plg-ink)]">{META.assistant}</div>
+            <div className="mt-0.5 truncate text-[12px] text-[var(--plg-muted)]">{prompt.q}</div>
+          </div>
+          <button
+            onClick={onClose}
+            className="flex h-7 w-7 flex-none items-center justify-center rounded-full text-[16px] text-[var(--plg-muted)] hover:bg-[var(--plg-surface)] hover:text-[var(--plg-ink)]"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="overflow-y-auto px-5 py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="text-[11px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
+              ASINs surfaced
+            </div>
+            <span className="text-[11.5px] text-[var(--plg-muted)]">{fmtDate(META.runDate)}</span>
+          </div>
+          <div className="mt-2.5 max-h-[240px] space-y-1.5 overflow-y-auto pr-1">
+            {citations.map((c) => (
+              <a
+                key={c.rank}
+                href={`https://www.amazon.com/dp/${c.asin}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={
+                  c.isBrand
+                    ? "flex items-center gap-2.5 rounded-lg border-[1.5px] border-[var(--plg-accent)] bg-[rgba(194,49,255,.05)] px-3 py-2 transition hover:bg-[rgba(194,49,255,.09)]"
+                    : "flex items-center gap-2.5 rounded-lg border border-[var(--plg-hair)] px-3 py-2 transition hover:border-[var(--plg-secondary)]"
+                }
+              >
+                <span className="w-4 flex-none text-right font-mono text-[11.5px] font-semibold text-[var(--plg-muted)]">
+                  {c.rank}
+                </span>
+                <span
+                  className={
+                    c.isBrand
+                      ? "flex h-5.5 w-5.5 flex-none items-center justify-center rounded-full bg-[var(--plg-accent)] text-[10.5px] font-bold text-white"
+                      : "flex h-5.5 w-5.5 flex-none items-center justify-center rounded-full bg-[var(--plg-surface-2)] text-[10.5px] font-semibold text-[var(--plg-muted)]"
+                  }
+                >
+                  {c.name.charAt(0)}
+                </span>
+                <span
+                  className={`truncate text-[13px] ${
+                    c.isBrand ? "font-semibold text-[var(--plg-accent)]" : "text-[var(--plg-text2)]"
+                  }`}
+                >
+                  {c.name}
+                </span>
+                {c.isBrand && <span className="flex-none text-[10.5px] font-bold text-[var(--plg-accent)]">· YOU</span>}
+                <span className="ml-auto flex-none font-mono text-[11.5px] text-[var(--plg-muted)]">{c.asin} ↗</span>
+              </a>
+            ))}
+          </div>
+
+          <div className="mb-2 mt-4.5 text-[11px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
+            Raw response
+          </div>
+          <p className="text-[13.5px] leading-relaxed text-[var(--plg-text2)]">{response}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // "By prompt" tab: sortable/filterable prompt table + gap/low/win callout cards.
 // Ported from renderPrompts() + the prompt-insights IIFE.
@@ -15,13 +97,7 @@ export function PromptTab() {
   // the top.
   const [sortKey, setSortKey] = useState<SortKey>("vis");
   const [sortDir, setSortDir] = useState<1 | -1>(1);
-  const [expandedQ, setExpandedQ] = useState<string | null>(null);
-  const [showFullResponse, setShowFullResponse] = useState(false);
-
-  function toggleExpanded(q: string) {
-    setExpandedQ((prev) => (prev === q ? null : q));
-    setShowFullResponse(false);
-  }
+  const [selectedPrompt, setSelectedPrompt] = useState<PromptRow | null>(null);
 
   const { prompts: PROMPTS } = useReportData();
   const rows = PROMPTS.slice().sort((a, b) => {
@@ -103,116 +179,42 @@ export function PromptTab() {
           <tbody>
             {rows.map((p) => {
               const gap = p.vis === 0;
-              const expanded = expandedQ === p.q;
               return (
-                <Fragment key={p.q}>
-                  <tr
-                    onClick={() => toggleExpanded(p.q)}
-                    className={`cursor-pointer border-b border-[var(--plg-hair)] hover:bg-[var(--plg-surface)] ${
-                      expanded ? "bg-[var(--plg-surface)]" : ""
-                    }`}
-                  >
-                    <td className={`max-w-[520px] px-3.5 py-3.5 ${gap ? "text-[var(--plg-muted)]" : "text-[var(--plg-ink)]"}`}>
-                      <span className="mr-2 inline-block w-3 text-[15px] font-bold text-[var(--plg-muted)]">
-                        {expanded ? "▾" : "▸"}
+                <tr
+                  key={p.q}
+                  onClick={() => setSelectedPrompt(p)}
+                  className="cursor-pointer border-b border-[var(--plg-hair)] hover:bg-[var(--plg-surface)]"
+                >
+                  <td className={`max-w-[520px] px-3.5 py-3.5 ${gap ? "text-[var(--plg-muted)]" : "text-[var(--plg-ink)]"}`}>
+                    {p.q}{" "}
+                    {gap && (
+                      <span className="ml-1 inline-block rounded-full border border-[rgba(90,175,254,.32)] bg-[rgba(90,175,254,.12)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--plg-accent)]">
+                        gap
                       </span>
-                      {p.q}{" "}
-                      {gap && (
-                        <span className="ml-1 inline-block rounded-full border border-[rgba(90,175,254,.32)] bg-[rgba(90,175,254,.12)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--plg-accent)]">
-                          gap
-                        </span>
-                      )}
-                    </td>
-                    <td className="whitespace-nowrap px-3.5 py-3.5 text-[12.5px] text-[var(--plg-muted)]">{p.topic}</td>
-                    <td className="whitespace-nowrap px-3.5 py-3.5">
-                      <div className="flex items-center gap-2">
-                        <span className="h-2 w-10 flex-none overflow-hidden rounded-md bg-[var(--plg-surface-2)]">
-                          <span
-                            className="block h-full rounded-md bg-gradient-to-r from-[var(--plg-secondary)] to-[var(--plg-indigo)]"
-                            style={{ width: `${p.vis}%` }}
-                          />
-                        </span>
-                        <span className="font-mono text-[12.5px] text-[var(--plg-ink)]">{pct(p.vis)}</span>
-                      </div>
-                    </td>
-                    <td className="whitespace-nowrap px-3.5 py-3.5 font-mono text-[13.5px]">
-                      {gap ? (
-                        <span className="text-[var(--plg-gap)]">—</span>
-                      ) : (
-                        <span className={p.rank === 1 ? "font-semibold text-[var(--plg-indigo)]" : "text-[var(--plg-body)]"}>
-                          {p.rank == null ? "—" : p.rank.toFixed(1)}
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                  {expanded &&
-                    (() => {
-                      const citations = citationsForPrompt(p);
-                      const response = mockAssistantResponse(p, citations);
-                      const truncated = response.length > 160 ? response.slice(0, 160).trimEnd() + "…" : response;
-                      return (
-                        <tr className="border-b border-[var(--plg-hair)]">
-                          <td colSpan={4} className="bg-[var(--plg-surface)] px-4.5 py-4.5">
-                            <div className="rounded-xl border border-[var(--plg-hair)] bg-[var(--plg-paper)]">
-                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--plg-hair)] bg-[var(--plg-surface)] px-5.5 py-4">
-                                <div className="text-[15px] font-bold text-[var(--plg-ink)]">{META.assistant}</div>
-                                <div className="flex flex-none items-center gap-3.5">
-                                  <span className="text-[13px] text-[var(--plg-muted)]">{fmtDate(META.runDate)}</span>
-                                  <span className="rounded-md bg-[var(--plg-surface-2)] px-3 py-1.5 text-[13px] font-semibold text-[var(--plg-text2)]">
-                                    {citations.length} citations
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="px-5.5 py-5.5">
-                                <div className="mb-3 text-[12px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
-                                  Brands mentioned
-                                </div>
-                                <div className="flex flex-wrap gap-2.5">
-                                  {citations.map((c) => (
-                                    <span
-                                      key={c.rank}
-                                      className={
-                                        c.isBrand
-                                          ? "inline-flex items-center gap-2 rounded-full border-[1.5px] border-[var(--plg-accent)] bg-[rgba(194,49,255,.05)] px-3.5 py-2 text-[14px] font-semibold text-[var(--plg-accent)]"
-                                          : "inline-flex items-center gap-2 rounded-full border border-[var(--plg-hair)] px-3.5 py-2 text-[14px] text-[var(--plg-text2)]"
-                                      }
-                                    >
-                                      <span
-                                        className={
-                                          c.isBrand
-                                            ? "flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[var(--plg-accent)] text-[11px] font-bold text-white"
-                                            : "flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[var(--plg-surface-2)] text-[11px] font-semibold text-[var(--plg-muted)]"
-                                        }
-                                      >
-                                        {c.name.charAt(0)}
-                                      </span>
-                                      {c.name}
-                                      {c.isBrand && <span className="text-[11px] font-bold">· YOU</span>}
-                                    </span>
-                                  ))}
-                                </div>
-
-                                <div className="mb-3 mt-5.5 text-[12px] font-bold uppercase tracking-[.06em] text-[var(--plg-muted)]">
-                                  Response
-                                </div>
-                                <p className="text-[15px] leading-relaxed text-[var(--plg-text2)]">
-                                  {showFullResponse ? response : truncated}
-                                </p>
-                                {response.length > 160 && (
-                                  <button
-                                    onClick={() => setShowFullResponse((v) => !v)}
-                                    className="mt-2 text-[14px] font-semibold text-[var(--plg-indigo)] hover:underline"
-                                  >
-                                    {showFullResponse ? "Show less" : "Show more"}
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })()}
-                </Fragment>
+                    )}
+                  </td>
+                  <td className="whitespace-nowrap px-3.5 py-3.5 text-[12.5px] text-[var(--plg-muted)]">{p.topic}</td>
+                  <td className="whitespace-nowrap px-3.5 py-3.5">
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-10 flex-none overflow-hidden rounded-md bg-[var(--plg-surface-2)]">
+                        <span
+                          className="block h-full rounded-md bg-gradient-to-r from-[var(--plg-secondary)] to-[var(--plg-indigo)]"
+                          style={{ width: `${p.vis}%` }}
+                        />
+                      </span>
+                      <span className="font-mono text-[12.5px] text-[var(--plg-ink)]">{pct(p.vis)}</span>
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap px-3.5 py-3.5 font-mono text-[13.5px]">
+                    {gap ? (
+                      <span className="text-[var(--plg-gap)]">—</span>
+                    ) : (
+                      <span className={p.rank === 1 ? "font-semibold text-[var(--plg-indigo)]" : "text-[var(--plg-body)]"}>
+                        {p.rank == null ? "—" : p.rank.toFixed(1)}
+                      </span>
+                    )}
+                  </td>
+                </tr>
               );
             })}
           </tbody>
@@ -282,6 +284,8 @@ export function PromptTab() {
           </ul>
         </div>
       </div>
+
+      {selectedPrompt && <PromptDetailModal prompt={selectedPrompt} onClose={() => setSelectedPrompt(null)} />}
     </div>
   );
 }

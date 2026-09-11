@@ -41,6 +41,24 @@ export const LEADERBOARD: [string, number][] = [
   ["Nutro", 55], ["Merrick", 49], ["Rachael Ray Nutrish", 44],
 ];
 
+// Mock ASIN per leaderboard/citation name (Prompt tab drill-down "ASINs surfaced" list) —
+// illustrative only, there's no real per-SKU scrape backing these. Covers every name that
+// can appear in a citations list, including "Diamond Naturals" (the outside-top-10 scenario's
+// stand-in for the tracked brand).
+export const BRAND_ASIN: Record<string, string> = {
+  "Purina Pro Plan": "B00CPKD5NM",
+  "Blue Buffalo": "B00CQ7SFN0",
+  "Hill's Science Diet": "B01ATP1FIY",
+  "Acme Pet Co.": "B08XJQZ41P",
+  "Royal Canin": "B00JW8DUB6",
+  Iams: "B000WFRUOC",
+  "Wellness Core": "B0018CIN2S",
+  Nutro: "B00SN9BSKQ",
+  Merrick: "B00PHV3P9Q",
+  "Rachael Ray Nutrish": "B01AF1TVFC",
+  "Diamond Naturals": "B00164EJUC",
+};
+
 // Named head-to-head competitor comparison (Competitors tab): reuses the same AI-shelf
 // score scale as the leaderboard above (0-100, position-weighted composite) —
 // intentionally not a separate vis%/SOV%/rank breakdown per competitor, since that
@@ -292,35 +310,3 @@ export const TEARDOWN = {
   },
 };
 
-// ---------- sign-up flow: testimonial carousel ----------
-
-export const TCAR_TESTIMONIALS = [
-  {
-    quote:
-      "We had no idea how invisible we were to Alexa AI until we ran this report. Fixing our top 10 SKUs alone moved us from page 3 to being cited by name.",
-    name: "Priya Natarajan",
-    role: "VP Ecommerce, Nourra Foods",
-    initials: "PN",
-  },
-  {
-    quote:
-      "Content Agent found the exact shopper questions we were losing on — stuff our team never would have thought to test for. It paid for itself in the first month.",
-    name: "Marcus Whitfield",
-    role: "Director of Digital Shelf, Kindred Home",
-    initials: "MW",
-  },
-  {
-    quote:
-      "Our AI Visibility Score went from 31 to 68 in a quarter. That's not a vanity metric anymore — it's real search volume shifting to AI answers.",
-    name: "Elena Kowalski",
-    role: "Head of Growth, Solstice Outdoor",
-    initials: "EK",
-  },
-  {
-    quote:
-      "The one-SKU teardown was the moment it clicked for our whole team. Seeing exactly what Alexa AI would rewrite made the opportunity obvious.",
-    name: "Devon Osei",
-    role: "Sr. Manager, Amazon Strategy, Brightleaf Pet Co.",
-    initials: "DO",
-  },
-];

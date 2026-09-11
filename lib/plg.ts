@@ -2,7 +2,7 @@
 // Ported from the aeo-plg-visibility-report-dark_3.html prototype's <script> block
 // (aggregate(), pct(), num1(), rnk(), nameList(), fmtDate()).
 
-import { LEADERBOARD, META, type CosmoIntent, type PromptRow } from "@/data/plgReportData";
+import { BRAND_ASIN, LEADERBOARD, META, type CosmoIntent, type PromptRow } from "@/data/plgReportData";
 
 export type Aggregate = {
   vis: number;
@@ -44,7 +44,7 @@ export function applyScenario(
   };
 }
 
-export type Citation = { rank: number; name: string; isBrand: boolean };
+export type Citation = { rank: number; name: string; asin: string; isBrand: boolean };
 
 /**
  * The top-10 Alexa AI answers/SKUs for a single shopper prompt (PLG-03 tab drill-down):
@@ -55,15 +55,16 @@ export type Citation = { rank: number; name: string; isBrand: boolean };
  */
 export function citationsForPrompt(p: PromptRow): Citation[] {
   const others = LEADERBOARD.map(([name]) => name).filter((name) => name !== META.brand);
+  const asinFor = (name: string) => BRAND_ASIN[name] ?? "B000000000";
   if (p.rank == null) {
-    return others.slice(0, 10).map((name, i) => ({ rank: i + 1, name, isBrand: false }));
+    return others.slice(0, 10).map((name, i) => ({ rank: i + 1, name, asin: asinFor(name), isBrand: false }));
   }
   const brandPos = Math.min(Math.max(Math.round(p.rank), 1), 10);
   const citations: Citation[] = [];
   let oi = 0;
   for (let i = 1; i <= 10; i++) {
-    if (i === brandPos) citations.push({ rank: i, name: META.brand, isBrand: true });
-    else citations.push({ rank: i, name: others[oi++], isBrand: false });
+    if (i === brandPos) citations.push({ rank: i, name: META.brand, asin: asinFor(META.brand), isBrand: true });
+    else citations.push({ rank: i, name: others[oi], asin: asinFor(others[oi++]), isBrand: false });
   }
   return citations;
 }

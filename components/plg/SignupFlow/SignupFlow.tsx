@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/cn";
 import { PrimaryButton, SecondaryButton } from "@/components/plg/shared/Buttons";
-import { TestimonialCarousel } from "@/components/plg/SignupFlow/TestimonialCarousel";
+import { BenefitsBanner } from "@/components/plg/SignupFlow/BenefitsBanner";
 import { RETAILER_OPTIONS } from "@/data/retailers";
 
 // Sign-up flow (PLG-01/02): 3 screens — Sign up (email + name), Verify (email OTP),
@@ -313,7 +313,7 @@ export function SignupFlow() {
       </div>
 
       <div className="flex-1">
-        <TestimonialCarousel />
+        <BenefitsBanner />
       </div>
     </div>
   );
